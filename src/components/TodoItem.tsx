@@ -2,34 +2,40 @@ import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Input } from '@/components/ui/input'
-import { GripVertical, Archive, Trash2, Check, MessageSquare } from 'lucide-react'
-import type { Todo, DailyStatus } from '@/types'
+import { GripVertical, Archive, Trash2, Check, MessageSquare, Calendar } from 'lucide-react'
+import { DayPicker } from './DayPicker'
+import type { Todo, DailyStatus, DayOfWeek } from '@/types'
 import { cn } from '@/lib/utils'
 
 interface TodoItemProps {
   todo: Todo
   status: DailyStatus
   onEdit: (id: string, title: string) => void
+  onUpdateDays: (id: string, days: DayOfWeek[]) => { success: boolean; error?: string }
   onArchive: (id: string) => void
   onDelete: (id: string) => void
   onToggleCompleted: (todoId: string, date: string) => void
   onSetNote: (todoId: string, date: string, note: string) => void
   currentDate: string
+  disabledDays: DayOfWeek[]
 }
 
 export function TodoItem({
   todo,
   status,
   onEdit,
+  onUpdateDays,
   onArchive,
   onDelete,
   onToggleCompleted,
   onSetNote,
   currentDate,
+  disabledDays,
 }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(todo.title)
   const [showNote, setShowNote] = useState(false)
+  const [showDays, setShowDays] = useState(false)
   const [noteValue, setNoteValue] = useState(status.note)
 
   const {
@@ -58,6 +64,13 @@ export function TodoItem({
 
   const handleNoteBlur = () => {
     onSetNote(todo.id, currentDate, noteValue)
+  }
+
+  const handleDaysChange = (days: DayOfWeek[]) => {
+    const result = onUpdateDays(todo.id, days)
+    if (!result.success) {
+      // Revert — toast will be shown by parent
+    }
   }
 
   return (
@@ -133,6 +146,17 @@ export function TodoItem({
         </button>
 
         <button
+          onClick={() => setShowDays(!showDays)}
+          className={cn(
+            'p-1 text-muted-foreground hover:text-foreground transition-colors',
+            showDays && 'text-primary'
+          )}
+          aria-label="Edit days"
+        >
+          <Calendar className="h-3.5 w-3.5" />
+        </button>
+
+        <button
           onClick={() => onArchive(todo.id)}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Archive"
@@ -148,6 +172,17 @@ export function TodoItem({
           <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
+
+      {showDays && (
+        <div className="ml-12">
+          <DayPicker
+            selected={Array.isArray(todo.days) ? todo.days : [0, 1, 2, 3, 4, 5, 6]}
+            onChange={handleDaysChange}
+            disabledDays={disabledDays}
+            compact
+          />
+        </div>
+      )}
 
       {showNote && (
         <Input

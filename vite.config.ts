@@ -13,7 +13,7 @@ export default defineConfig({
         name: 'TD5 - Daily Todo Tracker',
         short_name: 'TD5',
         description: 'Track your top 5 daily todos',
-        theme_color: '#dc2626',
+        theme_color: '#849669',
         background_color: '#0f0f0f',
         display: 'standalone',
         scope: '/',

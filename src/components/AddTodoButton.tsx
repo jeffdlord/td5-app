@@ -1,21 +1,27 @@
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Plus } from 'lucide-react'
+import { DayPicker } from './DayPicker'
+import type { DayOfWeek } from '@/types'
 
 interface AddTodoButtonProps {
-  onAdd: (title: string) => { success: boolean; error?: string }
+  onAdd: (title: string, days: DayOfWeek[]) => { success: boolean; error?: string }
   disabled: boolean
+  disabledDays: DayOfWeek[]
+  currentDay: DayOfWeek
 }
 
-export function AddTodoButton({ onAdd, disabled }: AddTodoButtonProps) {
+export function AddTodoButton({ onAdd, disabled, disabledDays, currentDay }: AddTodoButtonProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [title, setTitle] = useState('')
+  const [days, setDays] = useState<DayOfWeek[]>([currentDay])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const result = onAdd(title)
+    const result = onAdd(title, days)
     if (result.success) {
       setTitle('')
+      setDays([currentDay])
       setIsAdding(false)
     }
   }
@@ -23,38 +29,46 @@ export function AddTodoButton({ onAdd, disabled }: AddTodoButtonProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       setTitle('')
+      setDays([currentDay])
       setIsAdding(false)
     }
   }
 
   if (isAdding) {
     return (
-      <form onSubmit={handleSubmit} className="flex gap-2 mt-3">
+      <form onSubmit={handleSubmit} className="mt-3 space-y-2 rounded-lg border bg-card p-3">
         <Input
           autoFocus
           placeholder="New to-do title..."
           value={title}
           onChange={e => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
-          onBlur={() => {
-            if (!title.trim()) {
-              setIsAdding(false)
-            }
-          }}
           maxLength={100}
         />
+        <div className="flex items-center justify-between gap-2">
+          <DayPicker selected={days} onChange={setDays} disabledDays={disabledDays} />
+          <button
+            type="submit"
+            className="text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1"
+          >
+            Add
+          </button>
+        </div>
       </form>
     )
   }
 
   return (
     <button
-      onClick={() => setIsAdding(true)}
+      onClick={() => {
+        setDays([currentDay])
+        setIsAdding(true)
+      }}
       disabled={disabled}
-      className="mt-3 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="mt-3 flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Plus className="h-4 w-4" />
-      Add to-do {disabled && '(max 5)'}
+      Add to-do {disabled && '(max reached)'}
     </button>
   )
 }

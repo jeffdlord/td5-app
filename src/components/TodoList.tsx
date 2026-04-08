@@ -13,16 +13,21 @@ import {
 } from '@dnd-kit/sortable'
 import { TodoItem } from './TodoItem'
 import { AddTodoButton } from './AddTodoButton'
-import type { Todo } from '@/types'
+import type { Todo, DayOfWeek } from '@/types'
 
 interface TodoListProps {
   todos: Todo[]
   currentDate: string
-  activeCount: number
-  maxActive: number
+  currentDay: DayOfWeek
+  dayTodoCount: number
+  maxPerDay: number
+  totalActive: number
+  maxTotal: number
+  disabledDays: DayOfWeek[]
   getStatus: (todoId: string, date: string) => { todoId: string; date: string; completed: 1 | null; note: string }
-  onAdd: (title: string) => { success: boolean; error?: string }
+  onAdd: (title: string, days: DayOfWeek[]) => { success: boolean; error?: string }
   onEdit: (id: string, title: string) => void
+  onUpdateDays: (id: string, days: DayOfWeek[]) => { success: boolean; error?: string }
   onReorder: (ids: string[]) => void
   onArchive: (id: string) => void
   onDelete: (id: string) => void
@@ -33,11 +38,16 @@ interface TodoListProps {
 export function TodoList({
   todos,
   currentDate,
-  activeCount,
-  maxActive,
+  currentDay,
+  dayTodoCount,
+  maxPerDay,
+  totalActive,
+  maxTotal,
+  disabledDays,
   getStatus,
   onAdd,
   onEdit,
+  onUpdateDays,
   onReorder,
   onArchive,
   onDelete,
@@ -63,11 +73,21 @@ export function TodoList({
     }
   }
 
+  const addDisabled = dayTodoCount >= maxPerDay || totalActive >= maxTotal
+
   if (todos.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground mb-4">No to-dos yet. Add your first one!</p>
-        <AddTodoButton onAdd={onAdd} disabled={activeCount >= maxActive} />
+      <div className="text-center py-8">
+        <div className="rounded-lg border bg-card p-8 mb-4">
+          <p className="text-lg font-medium text-foreground mb-1">No to-dos for this day</p>
+          <p className="text-sm text-muted-foreground">Add a to-do to get started!</p>
+        </div>
+        <AddTodoButton
+          onAdd={onAdd}
+          disabled={addDisabled}
+          disabledDays={disabledDays}
+          currentDay={currentDay}
+        />
       </div>
     )
   }
@@ -86,7 +106,9 @@ export function TodoList({
               todo={todo}
               status={getStatus(todo.id, currentDate)}
               currentDate={currentDate}
+              disabledDays={disabledDays}
               onEdit={onEdit}
+              onUpdateDays={onUpdateDays}
               onArchive={onArchive}
               onDelete={onDelete}
               onToggleCompleted={onToggleCompleted}
@@ -95,7 +117,12 @@ export function TodoList({
           ))}
         </SortableContext>
       </DndContext>
-      <AddTodoButton onAdd={onAdd} disabled={activeCount >= maxActive} />
+      <AddTodoButton
+        onAdd={onAdd}
+        disabled={addDisabled}
+        disabledDays={disabledDays}
+        currentDay={currentDay}
+      />
     </div>
   )
 }

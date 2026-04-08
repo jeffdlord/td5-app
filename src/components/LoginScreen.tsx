@@ -1,28 +1,41 @@
 import { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { EyeIcon } from './EyeIcon'
-import { Loader2, KeyRound } from 'lucide-react'
+import { Loader2, KeyRound, Sun, Moon } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface LoginScreenProps {
-  onLogin: (email: string, code: string, rememberMe: boolean) => { success: boolean; error?: string }
+  onLogin: (email: string, code: string, rememberMe: boolean) => Promise<{ success: boolean; error?: string }>
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
 }
 
-export function LoginScreen({ onLogin }: LoginScreenProps) {
-  const [email, setEmail] = useState('')
+const EMAIL_KEY = 'conspiracy_daily_email'
+const REMEMBER_KEY = 'conspiracy_remember_me'
+
+export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps) {
+  const [email, setEmail] = useState(() => {
+    const remembered = localStorage.getItem(REMEMBER_KEY)
+    if (remembered === 'true') {
+      return localStorage.getItem(EMAIL_KEY) || ''
+    }
+    return ''
+  })
   const [code, setCode] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
+  const [rememberMe, setRememberMe] = useState(() => localStorage.getItem(REMEMBER_KEY) === 'true')
   const [loading, setLoading] = useState(false)
+
+  const hasRememberedEmail = !!email
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const result = onLogin(email, code, rememberMe)
+      const result = await onLogin(email, code, rememberMe)
       if (!result.success) {
         toast.error(result.error)
       } else {
@@ -37,15 +50,22 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
+      <button
+        onClick={onToggleTheme}
+        className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      </button>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-2">
             <svg viewBox="0 0 120 50" className="h-16 w-auto">
               <defs>
                 <linearGradient id="td5grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#dc2626" />
-                  <stop offset="100%" stopColor="#ef4444" />
+                  <stop offset="0%" stopColor="#849669" />
+                  <stop offset="100%" stopColor="#9aad7e" />
                 </linearGradient>
               </defs>
               <text
@@ -61,9 +81,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               </text>
             </svg>
           </div>
-          <CardTitle className="text-2xl">TD5</CardTitle>
           <CardDescription>
-            Enter your email and today's daily access code to get started.
+            Enter your email and daily access code to get started.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -88,7 +107,8 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 <Input
                   id="code"
                   type="text"
-                  placeholder="Enter today's code"
+                  autoFocus={hasRememberedEmail}
+                  placeholder="Enter code"
                   maxLength={10}
                   required
                   className="pl-10"
@@ -111,10 +131,10 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="h-10 px-6 rounded-full relative overflow-hidden flex items-center justify-center text-white font-bold text-sm tracking-wider uppercase transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-500/30 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+                className="h-10 px-6 rounded-full relative overflow-hidden flex items-center justify-center text-white font-bold text-sm tracking-wider uppercase transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-[#849669]/30 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                 style={{
-                  background: 'linear-gradient(90deg, #dc2626 0%, #dc2626 48%, #b91c1c 48%, #b91c1c 52%, #ef4444 52%, #ef4444 100%)',
-                  boxShadow: '0 4px 15px rgba(220, 38, 38, 0.3), inset 0 1px 2px rgba(255,255,255,0.2)',
+                  background: 'linear-gradient(90deg, #849669 0%, #849669 48%, #6b7a54 48%, #6b7a54 52%, #9aad7e 52%, #9aad7e 100%)',
+                  boxShadow: '0 4px 15px rgba(132, 150, 105, 0.3), inset 0 1px 2px rgba(255,255,255,0.2)',
                 }}
               >
                 <span
