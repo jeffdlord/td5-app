@@ -39,7 +39,7 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
       if (!result.success) {
         toast.error(result.error)
       } else {
-        toast.success('Welcome to TD5!')
+        toast.success('Welcome to mo!')
       }
     } catch (err) {
       console.error(err)
@@ -63,7 +63,7 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
           <div className="mx-auto mb-2">
             <svg viewBox="0 0 120 50" className="h-16 w-auto">
               <defs>
-                <linearGradient id="td5grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient id="mograd" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#849669" />
                   <stop offset="100%" stopColor="#9aad7e" />
                 </linearGradient>
@@ -75,9 +75,9 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
                 fontFamily="system-ui, sans-serif"
                 fontWeight="900"
                 fontSize="42"
-                fill="url(#td5grad)"
+                fill="url(#mograd)"
               >
-                TD5
+                mo
               </text>
             </svg>
           </div>

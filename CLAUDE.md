@@ -1,7 +1,7 @@
-# TD5 — Daily Todo Tracker PWA
+# mo — Daily Todo Tracker PWA
 
 ## Project Overview
-TD5 is a Progressive Web App for managing recurring daily to-dos. Users create up to 20 to-dos, assign them to specific days of the week, and track completion + notes independently per calendar date.
+mo is a Progressive Web App for managing recurring daily to-dos. Users create up to 20 to-dos, assign them to specific days of the week, and track completion + notes independently per calendar date.
 
 - **Live:** https://td5-app.vercel.app
 - **GitHub:** https://github.com/jeffdlord/td5-app
@@ -17,6 +17,7 @@ TD5 is a Progressive Web App for managing recurring daily to-dos. Users create u
 - **Icons:** Lucide React
 - **Toasts:** Sonner
 - **Hosting:** Vercel (auto-deploys from `main`)
+- **Brand color:** #849669 (sage green)
 
 ## Architecture
 
@@ -33,6 +34,8 @@ TD5 is a Progressive Web App for managing recurring daily to-dos. Users create u
 | `td5_statuses:{email}` | Record<"YYYY-MM-DD:todoId", DailyStatus> — daily completion + notes |
 | `td5_settings:{email}` | UserSettings — theme + maxPerDay |
 | `td5_session:{sessionId}` | Session data with 30-day TTL |
+
+Note: Redis keys still use `td5_` prefix for backward compatibility.
 
 ### API Routes (`/api`)
 - `sessions.ts` — GET/POST/DELETE for session management + 5-user limit

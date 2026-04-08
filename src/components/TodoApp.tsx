@@ -98,7 +98,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
           <div className="flex items-center gap-2">
             <svg viewBox="0 0 120 50" className="h-8 w-auto">
               <defs>
-                <linearGradient id="td5grad-sm" x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient id="mograd-sm" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#849669" />
                   <stop offset="100%" stopColor="#9aad7e" />
                 </linearGradient>
@@ -110,9 +110,9 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
                 fontFamily="system-ui, sans-serif"
                 fontWeight="900"
                 fontSize="42"
-                fill="url(#td5grad-sm)"
+                fill="url(#mograd-sm)"
               >
-                TD5
+                mo
               </text>
             </svg>
           </div>
