@@ -125,7 +125,7 @@ export function useAuth() {
     }
 
     if (trimmedCode !== getTodayCode()) {
-      return { success: false, error: 'Invalid daily access code.' }
+      return { success: false, error: 'Invalid access code.' }
     }
 
     const sessionId = getOrCreateSessionId()

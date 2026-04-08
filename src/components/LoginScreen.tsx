@@ -82,7 +82,7 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
             </svg>
           </div>
           <CardDescription>
-            Enter your email and daily access code to get started.
+            it's all about the momentum
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -101,7 +101,7 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="code">Daily Access Code</Label>
+              <Label htmlFor="code">Access Code</Label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -131,18 +131,9 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
               <button
                 type="submit"
                 disabled={loading}
-                className="h-10 px-6 rounded-full relative overflow-hidden flex items-center justify-center text-white font-bold text-sm tracking-wider uppercase transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-[#849669]/30 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
-                style={{
-                  background: 'linear-gradient(90deg, #849669 0%, #849669 48%, #6b7a54 48%, #6b7a54 52%, #9aad7e 52%, #9aad7e 100%)',
-                  boxShadow: '0 4px 15px rgba(132, 150, 105, 0.3), inset 0 1px 2px rgba(255,255,255,0.2)',
-                }}
+                className="h-10 px-6 rounded-full flex items-center justify-center text-white font-bold text-sm tracking-wider uppercase transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+                style={{ backgroundColor: '#6b7a54' }}
               >
-                <span
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{
-                    background: 'linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)',
-                  }}
-                />
                 <span className="relative z-10 flex items-center gap-2">
                   {loading ? (
                     <>
