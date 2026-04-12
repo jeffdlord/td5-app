@@ -51,6 +51,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
 
   const currentDay = getDayOfWeek(currentDate)
   const todosForCurrentDay = todosForDay(currentDay)
+  const completedToday = todosForCurrentDay.filter(t => getStatus(t.id, currentDate).completed === 1).length
   const counts = dayCountMap()
 
   const disabledDays = useMemo(() => {
@@ -200,7 +201,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
 
         {view !== 'settings' && (
           <p className="text-center text-xs text-muted-foreground mt-8">
-            {todosForCurrentDay.length}/{maxPerDay} for today &middot;{' '}
+            {completedToday}/{todosForCurrentDay.length} today &middot;{' '}
             <button
               onClick={() => setView('all')}
               className="text-primary hover:underline"
