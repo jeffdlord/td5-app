@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useSwipeable } from 'react-swipeable'
+import confetti from 'canvas-confetti'
 import { useCurrentDate } from '@/hooks/useCurrentDate'
 import { useTodos } from '@/hooks/useTodos'
 import { useDailyStatus } from '@/hooks/useDailyStatus'
@@ -21,6 +22,17 @@ interface TodoAppProps {
   onUpdateTheme: (theme: 'light' | 'dark') => void
   onUpdateMaxPerDay: (maxPerDay: number) => void
 }
+
+const VICTORY_MESSAGES = [
+  "All done. Momentum secured. 🌱",
+  "Day cleared. That's how it compounds.",
+  "Full sweep — future-you says thanks.",
+  "Nailed it. Rest is productive too.",
+  "Clean list, clear head.",
+  "Done is the engine. Keep going.",
+  "That's a wrap. You showed up.",
+  "Every box checked. That's the whole game.",
+]
 
 /** Get the day-of-week (0=Sun..6=Sat) from a YYYY-MM-DD string */
 function getDayOfWeek(dateStr: string): DayOfWeek {
@@ -57,6 +69,47 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
   const disabledDays = useMemo(() => {
     return ALL_DAYS.filter(d => counts[d] >= maxPerDay)
   }, [counts, maxPerDay])
+
+  // Celebrate when the day flips from "not all done" to "all done"
+  const celebratedKeyRef = useRef<string | null>(null)
+  const prevAllDoneRef = useRef<boolean>(false)
+  useEffect(() => {
+    const total = todosForCurrentDay.length
+    const allDone = total > 0 && completedToday === total
+    const key = `${currentDate}:${total}`
+    if (allDone && !prevAllDoneRef.current && celebratedKeyRef.current !== key) {
+      celebratedKeyRef.current = key
+      const message = VICTORY_MESSAGES[Math.floor(Math.random() * VICTORY_MESSAGES.length)]
+      toast.success(message)
+      const colors = ['#849669', '#9aad7e', '#6b7a54', '#c4d4a8', '#ffffff']
+      const fire = (originX: number) => {
+        confetti({
+          particleCount: 60,
+          angle: originX < 0.5 ? 60 : 120,
+          spread: 70,
+          startVelocity: 55,
+          origin: { x: originX, y: 0.7 },
+          colors,
+          scalar: 0.9,
+          disableForReducedMotion: true,
+        })
+      }
+      fire(0.2)
+      fire(0.8)
+      setTimeout(() => {
+        confetti({
+          particleCount: 80,
+          spread: 100,
+          startVelocity: 45,
+          origin: { x: 0.5, y: 0.6 },
+          colors,
+          scalar: 0.9,
+          disableForReducedMotion: true,
+        })
+      }, 200)
+    }
+    prevAllDoneRef.current = allDone
+  }, [completedToday, todosForCurrentDay.length, currentDate])
 
   const handleAdd = (title: string, days: DayOfWeek[]) => {
     const result = addTodo(title, days)
