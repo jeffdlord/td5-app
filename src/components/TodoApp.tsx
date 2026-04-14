@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti'
 import { useCurrentDate } from '@/hooks/useCurrentDate'
 import { useTodos } from '@/hooks/useTodos'
 import { useDailyStatus } from '@/hooks/useDailyStatus'
+import { useDailyTasks } from '@/hooks/useDailyTasks'
 import { DateNavigator } from './DateNavigator'
 import { TodoList } from './TodoList'
 import { ArchiveView } from './ArchiveView'
@@ -60,10 +61,15 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
     deleteTodo,
   } = useTodos(settings.maxPerDay)
   const { getStatus, toggleCompleted, setNote } = useDailyStatus()
+  const { tasksForDate, addDailyTask, toggleDailyTask, deleteDailyTask } = useDailyTasks()
 
   const currentDay = getDayOfWeek(currentDate)
   const todosForCurrentDay = todosForDay(currentDay)
-  const completedToday = todosForCurrentDay.filter(t => getStatus(t.id, currentDate).completed === 1).length
+  const dailyTasksForCurrentDate = tasksForDate(currentDate)
+  const completedRecurring = todosForCurrentDay.filter(t => getStatus(t.id, currentDate).completed === 1).length
+  const completedDaily = dailyTasksForCurrentDate.filter(t => t.completed).length
+  const completedToday = completedRecurring + completedDaily
+  const totalToday = todosForCurrentDay.length + dailyTasksForCurrentDate.length
   const counts = dayCountMap()
 
   const disabledDays = useMemo(() => {
@@ -74,9 +80,8 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
   const celebratedKeyRef = useRef<string | null>(null)
   const prevAllDoneRef = useRef<boolean>(false)
   useEffect(() => {
-    const total = todosForCurrentDay.length
-    const allDone = total > 0 && completedToday === total
-    const key = `${currentDate}:${total}`
+    const allDone = totalToday > 0 && completedToday === totalToday
+    const key = `${currentDate}:${totalToday}`
     if (allDone && !prevAllDoneRef.current && celebratedKeyRef.current !== key) {
       celebratedKeyRef.current = key
       const message = VICTORY_MESSAGES[Math.floor(Math.random() * VICTORY_MESSAGES.length)]
@@ -109,7 +114,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
       }, 200)
     }
     prevAllDoneRef.current = allDone
-  }, [completedToday, todosForCurrentDay.length, currentDate])
+  }, [completedToday, totalToday, currentDate])
 
   const handleAdd = (title: string, days: DayOfWeek[]) => {
     const result = addTodo(title, days)
@@ -210,6 +215,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
         {view === 'active' ? (
           <TodoList
             todos={todosForCurrentDay}
+            dailyTasks={dailyTasksForCurrentDate}
             currentDate={currentDate}
             currentDay={currentDay}
             dayTodoCount={todosForCurrentDay.length}
@@ -219,12 +225,15 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
             disabledDays={disabledDays}
             getStatus={getStatus}
             onAdd={handleAdd}
+            onAddDailyTask={addDailyTask}
             onEdit={editTodo}
             onUpdateDays={handleUpdateDays}
             onReorder={reorderTodos}
             onArchive={handleArchive}
             onDelete={handleDelete}
             onToggleCompleted={toggleCompleted}
+            onToggleDailyTask={toggleDailyTask}
+            onDeleteDailyTask={deleteDailyTask}
             onSetNote={setNote}
           />
         ) : view === 'all' ? (
@@ -254,7 +263,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
 
         {view !== 'settings' && (
           <p className="text-center text-xs text-muted-foreground mt-8">
-            {completedToday}/{todosForCurrentDay.length} today
+            {completedToday}/{totalToday} today
           </p>
         )}
       </main>

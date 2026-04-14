@@ -28,6 +28,14 @@ export interface DailyStatus {
   note: string
 }
 
+export interface DailyTask {
+  id: string
+  title: string
+  date: string       // YYYY-MM-DD — exists only for this date
+  completed: boolean
+  createdAt: string
+}
+
 export interface UserSettings {
   theme: 'light' | 'dark'
   maxPerDay: number // 2–10

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -12,11 +13,15 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { TodoItem } from './TodoItem'
+import { DailyTaskItem } from './DailyTaskItem'
 import { AddTodoButton } from './AddTodoButton'
-import type { Todo, DayOfWeek } from '@/types'
+import { Plus } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import type { Todo, DailyTask, DayOfWeek } from '@/types'
 
 interface TodoListProps {
   todos: Todo[]
+  dailyTasks: DailyTask[]
   currentDate: string
   currentDay: DayOfWeek
   dayTodoCount: number
@@ -26,17 +31,21 @@ interface TodoListProps {
   disabledDays: DayOfWeek[]
   getStatus: (todoId: string, date: string) => { todoId: string; date: string; completed: 1 | null; note: string }
   onAdd: (title: string, days: DayOfWeek[]) => { success: boolean; error?: string }
+  onAddDailyTask: (title: string, date: string) => { success: boolean; error?: string }
   onEdit: (id: string, title: string) => void
   onUpdateDays: (id: string, days: DayOfWeek[]) => { success: boolean; error?: string }
   onReorder: (ids: string[]) => void
   onArchive: (id: string) => void
   onDelete: (id: string) => void
   onToggleCompleted: (todoId: string, date: string) => void
+  onToggleDailyTask: (id: string) => void
+  onDeleteDailyTask: (id: string) => void
   onSetNote: (todoId: string, date: string, note: string) => void
 }
 
 export function TodoList({
   todos,
+  dailyTasks,
   currentDate,
   currentDay,
   dayTodoCount,
@@ -46,14 +55,19 @@ export function TodoList({
   disabledDays,
   getStatus,
   onAdd,
+  onAddDailyTask,
   onEdit,
   onUpdateDays,
   onReorder,
   onArchive,
   onDelete,
   onToggleCompleted,
+  onToggleDailyTask,
+  onDeleteDailyTask,
   onSetNote,
 }: TodoListProps) {
+  const [showDailyInput, setShowDailyInput] = useState(false)
+  const [dailyTitle, setDailyTitle] = useState('')
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
@@ -75,7 +89,70 @@ export function TodoList({
 
   const addDisabled = dayTodoCount >= maxPerDay || totalActive >= maxTotal
 
-  if (todos.length === 0) {
+  const handleAddDailyTask = () => {
+    const result = onAddDailyTask(dailyTitle, currentDate)
+    if (result.success) {
+      setDailyTitle('')
+      setShowDailyInput(false)
+    }
+  }
+
+  const dailyTasksSection = (
+    <>
+      {dailyTasks.length > 0 && (
+        <div className="mt-4">
+          <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wide">Just for today</p>
+          {dailyTasks.map(task => (
+            <DailyTaskItem
+              key={task.id}
+              task={task}
+              onToggle={onToggleDailyTask}
+              onDelete={onDeleteDailyTask}
+            />
+          ))}
+        </div>
+      )}
+
+      {showDailyInput ? (
+        <div className="flex items-center gap-2 mt-3">
+          <Input
+            autoFocus
+            placeholder="Just for today..."
+            value={dailyTitle}
+            onChange={e => setDailyTitle(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleAddDailyTask()
+              if (e.key === 'Escape') { setShowDailyInput(false); setDailyTitle('') }
+            }}
+            className="h-8 text-sm flex-1"
+            maxLength={100}
+          />
+          <button
+            onClick={handleAddDailyTask}
+            className="text-xs text-primary hover:underline"
+          >
+            Add
+          </button>
+          <button
+            onClick={() => { setShowDailyInput(false); setDailyTitle('') }}
+            className="text-xs text-muted-foreground hover:underline"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowDailyInput(true)}
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mt-3"
+        >
+          <Plus className="h-3 w-3" />
+          just for today
+        </button>
+      )}
+    </>
+  )
+
+  if (todos.length === 0 && dailyTasks.length === 0) {
     return (
       <div className="text-center py-8">
         <div className="rounded-lg border bg-card p-8 mb-4">
@@ -88,6 +165,7 @@ export function TodoList({
           disabledDays={disabledDays}
           currentDay={currentDay}
         />
+        {dailyTasksSection}
       </div>
     )
   }
@@ -123,6 +201,7 @@ export function TodoList({
         disabledDays={disabledDays}
         currentDay={currentDay}
       />
+      {dailyTasksSection}
     </div>
   )
 }
