@@ -254,13 +254,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
 
         {view !== 'settings' && (
           <p className="text-center text-xs text-muted-foreground mt-8">
-            {completedToday}/{todosForCurrentDay.length} today &middot;{' '}
-            <button
-              onClick={() => setView('all')}
-              className="text-primary hover:underline"
-            >
-              {activeCount}/{maxTotal} total
-            </button>
+            {completedToday}/{todosForCurrentDay.length} today
           </p>
         )}
       </main>
