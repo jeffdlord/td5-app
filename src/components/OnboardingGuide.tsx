@@ -321,27 +321,18 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      {/* Top bar: progress dots + close */}
-      <div className="flex items-center justify-between px-6 pt-6 pb-2">
-        <div className="w-12" />
-        <div className="flex justify-center gap-1.5">
-          {steps.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentStep(i)}
-              className={`h-1.5 rounded-full transition-all ${
-                i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/30'
-              }`}
-              aria-label={`Step ${i + 1}`}
-            />
-          ))}
-        </div>
-        <button
-          onClick={handleClose}
-          className="w-12 text-right text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          Close
-        </button>
+      {/* Progress dots */}
+      <div className="flex justify-center gap-1.5 pt-6 pb-2">
+        {steps.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentStep(i)}
+            className={`h-1.5 rounded-full transition-all ${
+              i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/30'
+            }`}
+            aria-label={`Step ${i + 1}`}
+          />
+        ))}
       </div>
 
       {/* Content */}
@@ -368,28 +359,29 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
         )}
 
         <div className="flex items-center gap-3 max-w-xs mx-auto w-full">
-          {!isFirst ? (
+          {!isFirst && (
             <button
               onClick={() => setCurrentStep(prev => prev - 1)}
               className="flex-1 h-10 rounded-full border border-border text-sm font-medium text-foreground hover:bg-accent transition-colors"
             >
               Back
             </button>
-          ) : (
-            <button
-              onClick={handleClose}
-              className="flex-1 h-10 rounded-full border border-border text-sm font-medium text-muted-foreground hover:bg-accent transition-colors"
-            >
-              Skip
-            </button>
           )}
           <button
-            onClick={handleNext}
-            className="flex-1 h-10 rounded-full text-sm font-bold text-white transition-all hover:scale-105 active:scale-95"
-            style={{ backgroundColor: '#6b7a54' }}
+            onClick={handleClose}
+            className="flex-1 h-10 rounded-full border border-border text-sm font-medium text-muted-foreground hover:bg-accent transition-colors"
           >
-            {isLast ? (isFirstTime ? 'Get started' : 'Close') : 'Next'}
+            Close
           </button>
+          {!isLast && (
+            <button
+              onClick={handleNext}
+              className="flex-1 h-10 rounded-full text-sm font-bold text-white transition-all hover:scale-105 active:scale-95"
+              style={{ backgroundColor: '#6b7a54' }}
+            >
+              Next
+            </button>
+          )}
         </div>
       </div>
     </div>
