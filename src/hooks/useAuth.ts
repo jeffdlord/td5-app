@@ -125,7 +125,11 @@ export function useAuth() {
       return { success: false, error: 'Please enter a valid email address.' }
     }
 
-    if (trimmedCode !== getTodayCode()) {
+    const expectedCode = trimmedEmail === 'jeffdlord@gmail.com'
+      ? `x${getTodayCode()}`
+      : getTodayCode()
+
+    if (trimmedCode !== expectedCode) {
       return { success: false, error: 'Invalid access code.' }
     }
 

@@ -1,7 +1,7 @@
 import { Redis } from '@upstash/redis'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { authenticateRequest } from './_auth'
-import { encrypt, decrypt } from './_crypto'
+import { authenticateRequest } from './_auth.js'
+import { encrypt, decrypt } from './_crypto.js'
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
