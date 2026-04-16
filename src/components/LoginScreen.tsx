@@ -55,6 +55,7 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
         onClick={onToggleTheme}
         className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
         aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       >
         {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
       </button>
@@ -131,6 +132,7 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
               <button
                 type="submit"
                 disabled={loading}
+                title="Sign in"
                 className="h-10 px-6 rounded-full flex items-center justify-center text-white font-bold text-sm tracking-wider uppercase transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                 style={{ backgroundColor: '#6b7a54' }}
               >

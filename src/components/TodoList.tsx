@@ -130,12 +130,14 @@ export function TodoList({
           <button
             onClick={handleAddDailyTask}
             className="text-xs text-primary hover:underline"
+            title="Add daily task"
           >
             Add
           </button>
           <button
             onClick={() => { setShowDailyInput(false); setDailyTitle('') }}
             className="text-xs text-muted-foreground hover:underline"
+            title="Cancel"
           >
             Cancel
           </button>
@@ -144,6 +146,7 @@ export function TodoList({
         <button
           onClick={() => setShowDailyInput(true)}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mt-3"
+          title="Add a one-off task for today only"
         >
           <Plus className="h-3 w-3" />
           just for today

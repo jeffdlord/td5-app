@@ -25,6 +25,7 @@ export function DailyTaskItem({ task, onToggle, onDelete }: DailyTaskItemProps) 
             : 'border-muted-foreground/30 hover:border-primary'
         )}
         aria-label={task.completed ? 'Mark incomplete' : 'Mark complete'}
+        title={task.completed ? 'Mark incomplete' : 'Mark complete'}
       >
         {task.completed && <Check className="h-3 w-3" />}
       </button>
@@ -42,6 +43,7 @@ export function DailyTaskItem({ task, onToggle, onDelete }: DailyTaskItemProps) 
         onClick={() => onDelete(task.id)}
         className="p-1 text-muted-foreground hover:text-destructive transition-colors"
         aria-label="Delete"
+        title="Delete this task"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>

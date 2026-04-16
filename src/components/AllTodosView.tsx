@@ -88,6 +88,7 @@ function AllTodoRow({
           onClick={() => onArchive(todo.id)}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors shrink-0"
           aria-label="Archive"
+          title="Archive this to-do"
         >
           <Archive className="h-3.5 w-3.5" />
         </button>
@@ -96,6 +97,7 @@ function AllTodoRow({
           onClick={() => onDelete(todo.id)}
           className="p-1 text-muted-foreground hover:text-destructive transition-colors shrink-0"
           aria-label="Delete"
+          title="Delete this to-do"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -186,6 +188,7 @@ function AddTodoInline({
           />
           <button
             type="submit"
+            title="Add new to-do"
             className="text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 shrink-0"
           >
             Add
@@ -202,6 +205,13 @@ function AddTodoInline({
                 type="button"
                 onClick={() => toggleDay(day)}
                 disabled={isDisabled}
+                title={
+                  isDisabled
+                    ? `${DAY_LABELS[day]} is full`
+                    : isSelected
+                      ? `Remove from ${DAY_LABELS[day]}`
+                      : `Add to ${DAY_LABELS[day]}`
+                }
                 className={cn(
                   'flex-1 py-1 rounded-md text-xs font-medium transition-colors select-none',
                   isSelected
@@ -223,6 +233,7 @@ function AddTodoInline({
     <button
       onClick={() => setIsAdding(true)}
       className="mt-1 flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+      title="Add a new recurring to-do"
     >
       <Plus className="h-4 w-4" />
       Add to-do

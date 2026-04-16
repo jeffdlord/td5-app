@@ -49,6 +49,7 @@ export function AddTodoButton({ onAdd, disabled, disabledDays, currentDay }: Add
           <DayPicker selected={days} onChange={setDays} disabledDays={disabledDays} />
           <button
             type="submit"
+            title="Add new to-do"
             className="text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1"
           >
             Add
@@ -65,6 +66,7 @@ export function AddTodoButton({ onAdd, disabled, disabledDays, currentDay }: Add
         setIsAdding(true)
       }}
       disabled={disabled}
+      title={disabled ? 'Maximum to-dos reached' : 'Add a new recurring to-do'}
       className="mt-3 flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Plus className="h-4 w-4" />

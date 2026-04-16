@@ -17,6 +17,7 @@ export function SettingsView({ settings, onUpdateTheme, onUpdateMaxPerDay }: Set
         <div className="flex gap-2">
           <button
             onClick={() => onUpdateTheme('light')}
+            title="Switch to light mode"
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border-2 text-sm font-medium transition-colors',
               settings.theme === 'light'
@@ -29,6 +30,7 @@ export function SettingsView({ settings, onUpdateTheme, onUpdateMaxPerDay }: Set
           </button>
           <button
             onClick={() => onUpdateTheme('dark')}
+            title="Switch to dark mode"
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border-2 text-sm font-medium transition-colors',
               settings.theme === 'dark'
@@ -55,6 +57,7 @@ export function SettingsView({ settings, onUpdateTheme, onUpdateMaxPerDay }: Set
             disabled={settings.maxPerDay <= 2}
             className="h-10 w-10 rounded-lg border bg-muted flex items-center justify-center text-foreground hover:bg-accent transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Decrease limit"
+            title="Decrease daily limit"
           >
             <Minus className="h-4 w-4" />
           </button>
@@ -68,6 +71,7 @@ export function SettingsView({ settings, onUpdateTheme, onUpdateMaxPerDay }: Set
             disabled={settings.maxPerDay >= 10}
             className="h-10 w-10 rounded-lg border bg-muted flex items-center justify-center text-foreground hover:bg-accent transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Increase limit"
+            title="Increase daily limit"
           >
             <Plus className="h-4 w-4" />
           </button>

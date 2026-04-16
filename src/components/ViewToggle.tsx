@@ -11,9 +11,10 @@ interface ViewToggleProps {
 }
 
 export function ViewToggle({ view, onViewChange, archiveCount, isAdmin }: ViewToggleProps) {
-  const btn = (mode: ViewMode, icon: React.ReactNode, label: string) => (
+  const btn = (mode: ViewMode, icon: React.ReactNode, label: string, title: string) => (
     <button
       onClick={() => onViewChange(mode)}
+      title={title}
       className={cn(
         'flex-1 flex items-center justify-center gap-1.5 px-1.5 py-1.5 rounded-md text-xs font-medium transition-colors',
         view === mode
@@ -28,11 +29,11 @@ export function ViewToggle({ view, onViewChange, archiveCount, isAdmin }: ViewTo
 
   return (
     <div className="flex gap-1 mb-4 p-1 rounded-lg bg-muted">
-      {btn('active', <ListTodo className="h-3.5 w-3.5" />, 'Today')}
-      {btn('all', <LayoutList className="h-3.5 w-3.5" />, 'All')}
-      {btn('archive', <Archive className="h-3.5 w-3.5" />, `Archive${archiveCount > 0 ? ` (${archiveCount})` : ''}`)}
-      {btn('settings', <Settings className="h-3.5 w-3.5" />, 'Settings')}
-      {isAdmin && btn('dashboard', <BarChart3 className="h-3.5 w-3.5" />, 'Stats')}
+      {btn('active', <ListTodo className="h-3.5 w-3.5" />, 'Today', "Today's tasks")}
+      {btn('all', <LayoutList className="h-3.5 w-3.5" />, 'All', 'All recurring to-dos')}
+      {btn('archive', <Archive className="h-3.5 w-3.5" />, `Archive${archiveCount > 0 ? ` (${archiveCount})` : ''}`, 'Archived to-dos')}
+      {btn('settings', <Settings className="h-3.5 w-3.5" />, 'Settings', 'App settings')}
+      {isAdmin && btn('dashboard', <BarChart3 className="h-3.5 w-3.5" />, 'Stats', 'Admin dashboard')}
     </div>
   )
 }

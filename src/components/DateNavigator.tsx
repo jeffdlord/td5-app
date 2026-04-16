@@ -15,6 +15,7 @@ export function DateNavigator({ formattedDate, isToday, onPrev, onNext, onToday 
         onClick={onPrev}
         className="p-2 rounded-lg hover:bg-accent transition-colors"
         aria-label="Previous day"
+        title="Previous day"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
@@ -27,6 +28,7 @@ export function DateNavigator({ formattedDate, isToday, onPrev, onNext, onToday 
           <button
             onClick={onToday}
             className="text-xs text-muted-foreground hover:text-primary transition-colors"
+            title="Go to today"
           >
             Go to today
           </button>
@@ -37,6 +39,7 @@ export function DateNavigator({ formattedDate, isToday, onPrev, onNext, onToday 
         onClick={onNext}
         className="p-2 rounded-lg hover:bg-accent transition-colors"
         aria-label="Next day"
+        title="Next day"
       >
         <ChevronRight className="h-5 w-5" />
       </button>

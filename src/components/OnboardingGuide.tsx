@@ -338,7 +338,8 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
             className={`h-1.5 rounded-full transition-all ${
               i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/30'
             }`}
-            aria-label={`Step ${i + 1}`}
+            aria-label={`Go to step ${i + 1}`}
+            title={`Go to step ${i + 1}`}
           />
         ))}
       </div>
@@ -370,6 +371,7 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
           {!isFirst && (
             <button
               onClick={() => setCurrentStep(prev => prev - 1)}
+              title="Previous step"
               className="flex-1 h-10 rounded-full border border-border text-sm font-medium text-foreground hover:bg-accent transition-colors"
             >
               Back
@@ -377,6 +379,7 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
           )}
           <button
             onClick={handleClose}
+            title="Close guide"
             className="flex-1 h-10 rounded-full border border-border text-sm font-medium text-muted-foreground hover:bg-accent transition-colors"
           >
             Close
@@ -384,6 +387,7 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
           {!isLast && (
             <button
               onClick={handleNext}
+              title="Next step"
               className="flex-1 h-10 rounded-full text-sm font-bold text-white transition-all hover:scale-105 active:scale-95"
               style={{ backgroundColor: '#6b7a54' }}
             >

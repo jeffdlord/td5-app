@@ -89,6 +89,7 @@ export function TodoItem({
           {...listeners}
           className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground p-1"
           aria-label="Drag to reorder"
+          title="Drag to reorder"
         >
           <GripVertical className="h-4 w-4" />
         </button>
@@ -102,6 +103,7 @@ export function TodoItem({
               : 'border-muted-foreground/30 hover:border-primary'
           )}
           aria-label={status.completed === 1 ? 'Mark incomplete' : 'Mark complete'}
+          title={status.completed === 1 ? 'Mark incomplete' : 'Mark complete'}
         >
           {status.completed === 1 && <Check className="h-3 w-3" />}
         </button>
@@ -141,6 +143,7 @@ export function TodoItem({
             status.note && 'text-primary'
           )}
           aria-label="Toggle note"
+          title="Add or edit note"
         >
           <MessageSquare className="h-3.5 w-3.5" />
         </button>
@@ -152,6 +155,7 @@ export function TodoItem({
             showDays && 'text-primary'
           )}
           aria-label="Edit days"
+          title="Edit which days this appears"
         >
           <Calendar className="h-3.5 w-3.5" />
         </button>
@@ -160,6 +164,7 @@ export function TodoItem({
           onClick={() => onArchive(todo.id)}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Archive"
+          title="Archive this to-do"
         >
           <Archive className="h-3.5 w-3.5" />
         </button>
@@ -168,6 +173,7 @@ export function TodoItem({
           onClick={() => onDelete(todo.id)}
           className="p-1 text-muted-foreground hover:text-destructive transition-colors"
           aria-label="Delete"
+          title="Delete this to-do"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>

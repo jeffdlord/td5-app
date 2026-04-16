@@ -59,6 +59,7 @@ export function AdminDashboard() {
           disabled={loading}
           className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors disabled:opacity-50"
           aria-label="Refresh"
+          title="Refresh stats"
         >
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </button>

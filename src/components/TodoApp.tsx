@@ -211,6 +211,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
               onClick={onToggleTheme}
               className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               aria-label={settings.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={settings.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {settings.theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
@@ -218,6 +219,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
               onClick={onLogout}
               className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               aria-label="Logout"
+              title="Sign out"
             >
               <LogOut className="h-4 w-4" />
             </button>

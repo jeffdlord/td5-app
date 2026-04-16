@@ -36,6 +36,7 @@ export function ArchiveView({ todos, onDelete }: ArchiveViewProps) {
             onClick={() => onDelete(todo.id)}
             className="p-1 text-muted-foreground hover:text-destructive transition-colors ml-2"
             aria-label="Delete permanently"
+            title="Delete permanently"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
