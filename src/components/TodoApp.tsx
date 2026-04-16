@@ -299,6 +299,15 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
         )}
       </main>
 
+      {/* day50 logo — bottom right */}
+      <div className="fixed bottom-3 right-3 z-10 opacity-40 hover:opacity-70 transition-opacity">
+        <img
+          src={settings.theme === 'dark' ? '/day50-light.png' : '/day50-dark.png'}
+          alt="day50"
+          className="h-8 w-8 rounded-full"
+        />
+      </div>
+
       {showOnboarding && (
         <OnboardingGuide
           isFirstTime={onboardingIsFirstTime}
