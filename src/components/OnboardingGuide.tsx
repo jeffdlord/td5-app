@@ -260,7 +260,7 @@ const steps = [
   {
     illustration: <IllustrationDailyList />,
     title: 'Your daily list',
-    description: 'The Today tab shows your tasks for the current day. Tap the checkbox to mark items done. Complete them all for a surprise!',
+    description: 'The Today tab shows your tasks for the current day. Tap the checkbox to mark items done.',
   },
   {
     illustration: <IllustrationAddTasks />,
