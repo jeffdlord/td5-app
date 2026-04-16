@@ -1,15 +1,16 @@
 import { cn } from '@/lib/utils'
-import { ListTodo, Archive, LayoutList, Settings } from 'lucide-react'
+import { ListTodo, Archive, LayoutList, Settings, BarChart3 } from 'lucide-react'
 
-export type ViewMode = 'active' | 'all' | 'archive' | 'settings'
+export type ViewMode = 'active' | 'all' | 'archive' | 'settings' | 'dashboard'
 
 interface ViewToggleProps {
   view: ViewMode
   onViewChange: (view: ViewMode) => void
   archiveCount: number
+  isAdmin?: boolean
 }
 
-export function ViewToggle({ view, onViewChange, archiveCount }: ViewToggleProps) {
+export function ViewToggle({ view, onViewChange, archiveCount, isAdmin }: ViewToggleProps) {
   const btn = (mode: ViewMode, icon: React.ReactNode, label: string) => (
     <button
       onClick={() => onViewChange(mode)}
@@ -31,6 +32,7 @@ export function ViewToggle({ view, onViewChange, archiveCount }: ViewToggleProps
       {btn('all', <LayoutList className="h-3.5 w-3.5" />, 'All')}
       {btn('archive', <Archive className="h-3.5 w-3.5" />, `Archive${archiveCount > 0 ? ` (${archiveCount})` : ''}`)}
       {btn('settings', <Settings className="h-3.5 w-3.5" />, 'Settings')}
+      {isAdmin && btn('dashboard', <BarChart3 className="h-3.5 w-3.5" />, 'Stats')}
     </div>
   )
 }

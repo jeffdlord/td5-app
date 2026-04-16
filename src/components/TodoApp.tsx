@@ -10,6 +10,7 @@ import { TodoList } from './TodoList'
 import { ArchiveView } from './ArchiveView'
 import { AllTodosView } from './AllTodosView'
 import { SettingsView } from './SettingsView'
+import { AdminDashboard } from './AdminDashboard'
 import { ViewToggle, type ViewMode } from './ViewToggle'
 import { LogOut, Sun, Moon } from 'lucide-react'
 import { toast } from 'sonner'
@@ -42,8 +43,11 @@ function getDayOfWeek(dateStr: string): DayOfWeek {
   return d.getDay() as DayOfWeek
 }
 
+const ADMIN_EMAIL = 'jeffdlord@gmail.com'
+
 export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateTheme, onUpdateMaxPerDay }: TodoAppProps) {
   const [view, setView] = useState<ViewMode>('active')
+  const isAdmin = email?.toLowerCase().trim() === ADMIN_EMAIL
   const { currentDate, formattedDate, isToday, goToNextDay, goToPrevDay, goToToday } = useCurrentDate()
   const {
     activeTodos,
@@ -210,6 +214,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
           view={view}
           onViewChange={setView}
           archiveCount={archivedTodos.length}
+          isAdmin={isAdmin}
         />
 
         {view === 'active' ? (
@@ -254,6 +259,8 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
             onUpdateTheme={onUpdateTheme}
             onUpdateMaxPerDay={onUpdateMaxPerDay}
           />
+        ) : view === 'dashboard' && isAdmin ? (
+          <AdminDashboard />
         ) : (
           <ArchiveView
             todos={archivedTodos}
@@ -261,7 +268,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
           />
         )}
 
-        {view !== 'settings' && (
+        {view !== 'settings' && view !== 'dashboard' && (
           <p className="text-center text-xs text-muted-foreground mt-8">
             {completedToday}/{totalToday} today
           </p>

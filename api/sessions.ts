@@ -63,6 +63,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Create/refresh session with TTL
       await redis.set(`${SESSION_PREFIX}${sessionId}`, JSON.stringify({ email, createdAt: new Date().toISOString() }), { ex: SESSION_TTL })
 
+      // Track login analytics per user
+      const analyticsKey = `td5_analytics:${email.toLowerCase().trim()}`
+      const existing = await redis.get<{ loginCount?: number } | string>(analyticsKey)
+      const analytics = typeof existing === 'string' ? JSON.parse(existing) : (existing || {})
+      await redis.set(analyticsKey, {
+        loginCount: ((analytics as { loginCount?: number }).loginCount || 0) + 1,
+        lastLogin: new Date().toISOString(),
+      })
+
       const newKeys = await redis.keys(`${SESSION_PREFIX}*`)
       return res.status(200).json({ success: true, count: newKeys.length, max: MAX_SESSIONS })
     }
