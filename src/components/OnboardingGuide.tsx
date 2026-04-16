@@ -255,7 +255,7 @@ const steps = [
   {
     illustration: <IllustrationWelcome />,
     title: 'Welcome to mo',
-    description: "mo helps you build momentum by focusing on a small set of daily tasks. Here's a quick tour.",
+    description: "mo helps you build momentum by focusing on a small set of daily tasks. All your data is encrypted end-to-end. Here's a quick tour.",
   },
   {
     illustration: <IllustrationDailyList />,
