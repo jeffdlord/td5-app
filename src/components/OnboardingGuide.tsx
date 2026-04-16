@@ -255,7 +255,7 @@ const steps = [
   {
     illustration: <IllustrationWelcome />,
     title: 'Welcome to mo',
-    description: "mo helps you build momentum by focusing on a small set of daily tasks. All your data is encrypted end-to-end. Here's a quick tour.",
+    description: "mo helps you build momentum by focusing on a small number of daily tasks — less is more. Keep it to 3-5 per day. Too many tasks defeats the purpose and makes completion less likely. All your data is encrypted end-to-end.",
   },
   {
     illustration: <IllustrationDailyList />,
