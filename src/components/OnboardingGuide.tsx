@@ -321,18 +321,27 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      {/* Progress dots */}
-      <div className="flex justify-center gap-1.5 pt-6 pb-2">
-        {steps.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentStep(i)}
-            className={`h-1.5 rounded-full transition-all ${
-              i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/30'
-            }`}
-            aria-label={`Step ${i + 1}`}
-          />
-        ))}
+      {/* Top bar: progress dots + close */}
+      <div className="flex items-center justify-between px-6 pt-6 pb-2">
+        <div className="w-12" />
+        <div className="flex justify-center gap-1.5">
+          {steps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentStep(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === currentStep ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/30'
+              }`}
+              aria-label={`Step ${i + 1}`}
+            />
+          ))}
+        </div>
+        <button
+          onClick={handleClose}
+          className="w-12 text-right text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Close
+        </button>
       </div>
 
       {/* Content */}
@@ -346,7 +355,7 @@ export function OnboardingGuide({ isFirstTime, onClose, onDismissForever }: Onbo
 
       {/* Footer */}
       <div className="px-6 pb-8 space-y-4">
-        {isFirstTime && isLast && (
+        {isFirstTime && (
           <label className="flex items-center justify-center gap-2 text-xs text-muted-foreground cursor-pointer">
             <input
               type="checkbox"
