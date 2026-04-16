@@ -1,5 +1,7 @@
 import { Redis } from '@upstash/redis'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { authenticateRequest } from './_auth'
+import { encrypt, decrypt } from './_crypto'
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
@@ -13,21 +15,24 @@ function tasksKey(email: string) {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Session-Id')
 
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const email = (req.query.email as string) || ''
-  if (!email) return res.status(400).json({ error: 'Email is required.' })
+  const email = await authenticateRequest(req, res)
+  if (!email) return
 
   try {
     if (req.method === 'GET') {
       const data = await redis.get(tasksKey(email))
       let tasks: unknown[] = []
-      if (Array.isArray(data)) {
-        tasks = data
-      } else if (typeof data === 'string') {
-        try { tasks = JSON.parse(data) } catch { tasks = [] }
+      if (data !== null) {
+        const decrypted = decrypt<unknown>(data)
+        if (Array.isArray(decrypted)) {
+          tasks = decrypted
+        } else if (typeof decrypted === 'string') {
+          try { tasks = JSON.parse(decrypted) } catch { tasks = [] }
+        }
       }
       return res.status(200).json({ tasks })
     }
@@ -35,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'PUT') {
       const { tasks } = req.body
       if (!Array.isArray(tasks)) return res.status(400).json({ error: 'tasks must be an array.' })
-      await redis.set(tasksKey(email), tasks)
+      await redis.set(tasksKey(email), encrypt(tasks))
       return res.status(200).json({ success: true })
     }
 

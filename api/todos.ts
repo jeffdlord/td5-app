@@ -1,5 +1,7 @@
 import { Redis } from '@upstash/redis'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { authenticateRequest } from './_auth'
+import { encrypt, decrypt } from './_crypto'
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
@@ -13,33 +15,32 @@ function todosKey(email: string) {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Session-Id')
 
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const email = (req.query.email as string) || ''
-  if (!email) return res.status(400).json({ error: 'Email is required.' })
+  const email = await authenticateRequest(req, res)
+  if (!email) return // response already sent
 
   try {
-    // GET — fetch todos for this user
     if (req.method === 'GET') {
       const data = await redis.get(todosKey(email))
-      // Upstash auto-deserializes JSON, so data may be an array, string, or null
       let todos: unknown[] = []
-      if (Array.isArray(data)) {
-        todos = data
-      } else if (typeof data === 'string') {
-        try { todos = JSON.parse(data) } catch { todos = [] }
+      if (data !== null) {
+        const decrypted = decrypt<unknown>(data)
+        if (Array.isArray(decrypted)) {
+          todos = decrypted
+        } else if (typeof decrypted === 'string') {
+          try { todos = JSON.parse(decrypted) } catch { todos = [] }
+        }
       }
       return res.status(200).json({ todos })
     }
 
-    // PUT — overwrite todos for this user
     if (req.method === 'PUT') {
       const { todos } = req.body
       if (!Array.isArray(todos)) return res.status(400).json({ error: 'todos must be an array.' })
-      // Store as native JSON — Upstash handles serialization
-      await redis.set(todosKey(email), todos)
+      await redis.set(todosKey(email), encrypt(todos))
       return res.status(200).json({ success: true })
     }
 

@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
+import { authQuery } from '@/lib/api'
 import type { DailyTask } from '@/types'
 
-function getEmail(): string | null {
-  return localStorage.getItem('conspiracy_daily_email')
-}
-
-async function fetchDailyTasks(email: string): Promise<DailyTask[] | null> {
+async function fetchDailyTasks(): Promise<DailyTask[] | null> {
   try {
-    const res = await fetch(`/api/daily-tasks?email=${encodeURIComponent(email)}`)
+    const q = authQuery()
+    if (!q) return null
+    const res = await fetch(`/api/daily-tasks?${q}`)
     if (!res.ok) return null
     const data = await res.json()
     return Array.isArray(data.tasks) ? data.tasks : null
@@ -17,9 +16,11 @@ async function fetchDailyTasks(email: string): Promise<DailyTask[] | null> {
   }
 }
 
-async function saveDailyTasks(email: string, tasks: DailyTask[]): Promise<void> {
+async function saveDailyTasks(tasks: DailyTask[]): Promise<void> {
   try {
-    await fetch(`/api/daily-tasks?email=${encodeURIComponent(email)}`, {
+    const q = authQuery()
+    if (!q) return
+    await fetch(`/api/daily-tasks?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tasks }),
@@ -38,10 +39,7 @@ export function useDailyTasks() {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
-    const email = getEmail()
-    if (!email) return
-
-    fetchDailyTasks(email).then(remoteTasks => {
+    fetchDailyTasks().then(remoteTasks => {
       if (remoteTasks !== null) {
         setTasks(remoteTasks)
       }
@@ -51,8 +49,7 @@ export function useDailyTasks() {
   const syncTasks = useCallback((updater: (prev: DailyTask[]) => DailyTask[]) => {
     setTasks(prev => {
       const next = updater(prev)
-      const email = getEmail()
-      if (email) saveDailyTasks(email, next)
+      saveDailyTasks(next)
       return next
     })
   }, [setTasks])

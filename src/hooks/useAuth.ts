@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getTodayCode } from './useCurrentDate'
+import { clearCryptoCache } from '@/lib/clientCrypto'
 
 const EMAIL_KEY = 'conspiracy_daily_email'
 const REMEMBER_KEY = 'conspiracy_remember_me'
@@ -155,6 +156,7 @@ export function useAuth() {
     localStorage.removeItem(EMAIL_KEY)
     localStorage.removeItem(SESSION_KEY)
     clearRemember()
+    clearCryptoCache()
     setEmail(null)
     setIsLoggedIn(false)
   }, [])

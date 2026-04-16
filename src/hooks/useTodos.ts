@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
+import { authQuery } from '@/lib/api'
 import type { Todo, DayOfWeek } from '@/types'
 
 const MAX_TOTAL = 20
 
-function getEmail(): string | null {
-  return localStorage.getItem('conspiracy_daily_email')
-}
-
-async function fetchTodos(email: string): Promise<Todo[] | null> {
+async function fetchTodos(): Promise<Todo[] | null> {
   try {
-    const res = await fetch(`/api/todos?email=${encodeURIComponent(email)}`)
+    const q = authQuery()
+    if (!q) return null
+    const res = await fetch(`/api/todos?${q}`)
     if (!res.ok) return null
     const data = await res.json()
     return Array.isArray(data.todos) ? data.todos : null
@@ -19,9 +18,11 @@ async function fetchTodos(email: string): Promise<Todo[] | null> {
   }
 }
 
-async function saveTodos(email: string, todos: Todo[]): Promise<void> {
+async function saveTodos(todos: Todo[]): Promise<void> {
   try {
-    await fetch(`/api/todos?email=${encodeURIComponent(email)}`, {
+    const q = authQuery()
+    if (!q) return
+    await fetch(`/api/todos?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ todos }),
@@ -59,10 +60,7 @@ export function useTodos(maxPerDay: number = 5) {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
-    const email = getEmail()
-    if (!email) return
-
-    fetchTodos(email).then(remoteTodos => {
+    fetchTodos().then(remoteTodos => {
       if (remoteTodos !== null) {
         // Migrate remote todos too
         const migrated = remoteTodos.map(t =>
@@ -76,8 +74,7 @@ export function useTodos(maxPerDay: number = 5) {
   const syncTodos = useCallback((updater: (prev: Todo[]) => Todo[]) => {
     setTodos(prev => {
       const next = updater(prev)
-      const email = getEmail()
-      if (email) saveTodos(email, next)
+      saveTodos(next)
       return next
     })
   }, [setTodos])

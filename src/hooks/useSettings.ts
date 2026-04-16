@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
+import { authQuery } from '@/lib/api'
 import type { UserSettings } from '@/types'
 
 const DEFAULT_SETTINGS: UserSettings = {
@@ -7,17 +8,15 @@ const DEFAULT_SETTINGS: UserSettings = {
   maxPerDay: 5,
 }
 
-function getEmail(): string | null {
-  return localStorage.getItem('conspiracy_daily_email')
-}
-
 function getSystemTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-async function fetchSettings(email: string): Promise<UserSettings | null> {
+async function fetchSettings(): Promise<UserSettings | null> {
   try {
-    const res = await fetch(`/api/settings?email=${encodeURIComponent(email)}`)
+    const q = authQuery()
+    if (!q) return null
+    const res = await fetch(`/api/settings?${q}`)
     if (!res.ok) return null
     const data = await res.json()
     return data.settings && typeof data.settings === 'object' ? data.settings : null
@@ -26,9 +25,11 @@ async function fetchSettings(email: string): Promise<UserSettings | null> {
   }
 }
 
-async function saveSettings(email: string, settings: UserSettings): Promise<void> {
+async function saveSettings(settings: UserSettings): Promise<void> {
   try {
-    await fetch(`/api/settings?email=${encodeURIComponent(email)}`, {
+    const q = authQuery()
+    if (!q) return
+    await fetch(`/api/settings?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ settings }),
@@ -60,10 +61,7 @@ export function useSettings() {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
-    const email = getEmail()
-    if (!email) return
-
-    fetchSettings(email).then(remote => {
+    fetchSettings().then(remote => {
       if (remote !== null) {
         // Merge with defaults for any missing fields
         setSettings({
@@ -77,8 +75,7 @@ export function useSettings() {
   const syncSettings = useCallback((updater: (prev: UserSettings) => UserSettings) => {
     setSettings(prev => {
       const next = updater(prev)
-      const email = getEmail()
-      if (email) saveSettings(email, next)
+      saveSettings(next)
       return next
     })
   }, [setSettings])

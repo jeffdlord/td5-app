@@ -1,5 +1,7 @@
 import { Redis } from '@upstash/redis'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { authenticateRequest } from './_auth'
+import { encrypt, decrypt } from './_crypto'
 
 const redis = new Redis({
   url: process.env.KV_REST_API_URL!,
@@ -13,21 +15,24 @@ function settingsKey(email: string) {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Session-Id')
 
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const email = (req.query.email as string) || ''
-  if (!email) return res.status(400).json({ error: 'Email is required.' })
+  const email = await authenticateRequest(req, res)
+  if (!email) return
 
   try {
     if (req.method === 'GET') {
       const data = await redis.get(settingsKey(email))
       let settings = { theme: 'light', maxPerDay: 5 }
-      if (data && typeof data === 'object' && !Array.isArray(data)) {
-        settings = data as typeof settings
-      } else if (typeof data === 'string') {
-        try { settings = JSON.parse(data) } catch { /* use default */ }
+      if (data !== null) {
+        const decrypted = decrypt<unknown>(data)
+        if (decrypted && typeof decrypted === 'object' && !Array.isArray(decrypted)) {
+          settings = decrypted as typeof settings
+        } else if (typeof decrypted === 'string') {
+          try { settings = JSON.parse(decrypted) } catch { /* use default */ }
+        }
       }
       return res.status(200).json({ settings })
     }
@@ -37,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (typeof settings !== 'object' || settings === null) {
         return res.status(400).json({ error: 'settings must be an object.' })
       }
-      await redis.set(settingsKey(email), settings)
+      await redis.set(settingsKey(email), encrypt(settings))
       return res.status(200).json({ success: true })
     }
 

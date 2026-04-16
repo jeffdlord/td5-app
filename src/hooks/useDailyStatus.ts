@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
+import { authQuery } from '@/lib/api'
 import type { DailyStatus } from '@/types'
 
 function makeKey(date: string, todoId: string): string {
   return `${date}:${todoId}`
 }
 
-function getEmail(): string | null {
-  return localStorage.getItem('conspiracy_daily_email')
-}
-
-async function fetchStatuses(email: string): Promise<Record<string, DailyStatus> | null> {
+async function fetchStatuses(): Promise<Record<string, DailyStatus> | null> {
   try {
-    const res = await fetch(`/api/statuses?email=${encodeURIComponent(email)}`)
+    const q = authQuery()
+    if (!q) return null
+    const res = await fetch(`/api/statuses?${q}`)
     if (!res.ok) return null
     const data = await res.json()
     return data.statuses && typeof data.statuses === 'object' ? data.statuses : null
@@ -21,9 +20,11 @@ async function fetchStatuses(email: string): Promise<Record<string, DailyStatus>
   }
 }
 
-async function saveStatuses(email: string, statuses: Record<string, DailyStatus>): Promise<void> {
+async function saveStatuses(statuses: Record<string, DailyStatus>): Promise<void> {
   try {
-    await fetch(`/api/statuses?email=${encodeURIComponent(email)}`, {
+    const q = authQuery()
+    if (!q) return
+    await fetch(`/api/statuses?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ statuses }),
@@ -42,10 +43,7 @@ export function useDailyStatus() {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
-    const email = getEmail()
-    if (!email) return
-
-    fetchStatuses(email).then(remoteStatuses => {
+    fetchStatuses().then(remoteStatuses => {
       if (remoteStatuses !== null) {
         setStatuses(remoteStatuses)
       }
@@ -56,8 +54,7 @@ export function useDailyStatus() {
   const syncStatuses = useCallback((updater: (prev: Record<string, DailyStatus>) => Record<string, DailyStatus>) => {
     setStatuses(prev => {
       const next = updater(prev)
-      const email = getEmail()
-      if (email) saveStatuses(email, next)
+      saveStatuses(next)
       return next
     })
   }, [setStatuses])
