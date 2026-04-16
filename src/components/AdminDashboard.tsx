@@ -79,35 +79,35 @@ export function AdminDashboard() {
           <p className="text-sm text-muted-foreground">No users found.</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {users.map(user => (
-            <div
-              key={user.email}
-              className="rounded-lg border bg-card p-3"
-            >
-              <p className="text-sm font-medium text-foreground truncate mb-2">
-                {user.email}
-              </p>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
-                <div className="text-muted-foreground">Logins</div>
-                <div className="text-foreground text-right">{user.loginCount}</div>
+        <div>
+          <div className="overflow-x-auto -mx-4 px-4">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b text-muted-foreground">
+                  <th className="text-left py-2 pr-3 font-medium">User</th>
+                  <th className="text-right py-2 px-2 font-medium">Logins</th>
+                  <th className="text-right py-2 px-2 font-medium whitespace-nowrap">Last Login</th>
+                  <th className="text-right py-2 px-2 font-medium">Items</th>
+                  <th className="text-right py-2 px-2 font-medium">Done</th>
+                  <th className="text-right py-2 pl-2 font-medium">Avg/d</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.email} className="border-b border-border/50">
+                    <td className="py-2 pr-3 text-foreground max-w-[120px] truncate">{user.email}</td>
+                    <td className="py-2 px-2 text-right text-foreground">{user.loginCount}</td>
+                    <td className="py-2 px-2 text-right text-foreground whitespace-nowrap">{formatDate(user.lastLogin)}</td>
+                    <td className="py-2 px-2 text-right text-foreground">{user.totalItems}</td>
+                    <td className="py-2 px-2 text-right text-foreground">{user.totalCompleted}</td>
+                    <td className="py-2 pl-2 text-right text-foreground">{user.avgCompletedPerDay}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-                <div className="text-muted-foreground">Last login</div>
-                <div className="text-foreground text-right">{formatDate(user.lastLogin)}</div>
-
-                <div className="text-muted-foreground">Active items</div>
-                <div className="text-foreground text-right">{user.totalItems}</div>
-
-                <div className="text-muted-foreground">Completed</div>
-                <div className="text-foreground text-right">{user.totalCompleted}</div>
-
-                <div className="text-muted-foreground">Avg/day</div>
-                <div className="text-foreground text-right">{user.avgCompletedPerDay}</div>
-              </div>
-            </div>
-          ))}
-
-          <p className="text-center text-xs text-muted-foreground pt-2">
+          <p className="text-center text-xs text-muted-foreground pt-3">
             {users.length} user{users.length !== 1 ? 's' : ''}
           </p>
         </div>
