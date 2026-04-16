@@ -11,8 +11,9 @@ import { ArchiveView } from './ArchiveView'
 import { AllTodosView } from './AllTodosView'
 import { SettingsView } from './SettingsView'
 import { AdminDashboard } from './AdminDashboard'
+import { OnboardingGuide } from './OnboardingGuide'
 import { ViewToggle, type ViewMode } from './ViewToggle'
-import { LogOut, Sun, Moon } from 'lucide-react'
+import { LogOut, Sun, Moon, HelpCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { ALL_DAYS, type DayOfWeek, type UserSettings } from '@/types'
 
@@ -45,9 +46,24 @@ function getDayOfWeek(dateStr: string): DayOfWeek {
 
 const ADMIN_EMAIL = 'jeffdlord@gmail.com'
 
+const ONBOARDING_DISMISSED_KEY = 'mo_onboarding_dismissed'
+
 export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateTheme, onUpdateMaxPerDay }: TodoAppProps) {
   const [view, setView] = useState<ViewMode>('active')
   const isAdmin = email?.toLowerCase().trim() === ADMIN_EMAIL
+
+  // Onboarding
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return localStorage.getItem(ONBOARDING_DISMISSED_KEY) !== 'true'
+  })
+  const [onboardingIsFirstTime, setOnboardingIsFirstTime] = useState(() => {
+    return localStorage.getItem(ONBOARDING_DISMISSED_KEY) !== 'true'
+  })
+
+  const openHelp = () => {
+    setOnboardingIsFirstTime(false)
+    setShowOnboarding(true)
+  }
   const { currentDate, formattedDate, isToday, goToNextDay, goToPrevDay, goToToday } = useCurrentDate()
   const {
     activeTodos,
@@ -184,6 +200,14 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
               <span className="text-xs text-muted-foreground hidden sm:inline">{email}</span>
             )}
             <button
+              onClick={openHelp}
+              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              aria-label="Help"
+              title="Help"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </button>
+            <button
               onClick={onToggleTheme}
               className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
               aria-label={settings.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -274,6 +298,17 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
           </p>
         )}
       </main>
+
+      {showOnboarding && (
+        <OnboardingGuide
+          isFirstTime={onboardingIsFirstTime}
+          onClose={() => setShowOnboarding(false)}
+          onDismissForever={() => {
+            localStorage.setItem(ONBOARDING_DISMISSED_KEY, 'true')
+            setShowOnboarding(false)
+          }}
+        />
+      )}
     </div>
   )
 }
