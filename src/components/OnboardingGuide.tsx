@@ -222,28 +222,36 @@ function IllustrationAllArchive() {
 
 function IllustrationSettings() {
   return (
-    <div className="w-56 rounded-xl border bg-card shadow-sm overflow-hidden p-3 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-medium text-foreground">Theme</span>
-        <div className="flex gap-1">
-          <div className="h-6 px-2 rounded-md bg-background border text-[10px] flex items-center gap-1 font-medium text-foreground">
-            <div className="h-3 w-3 rounded-full bg-yellow-400" /> Light
-          </div>
-          <div className="h-6 px-2 rounded-md bg-muted text-[10px] flex items-center gap-1 text-muted-foreground">
-            <div className="h-3 w-3 rounded-full bg-indigo-400" /> Dark
+    <div className="w-56 space-y-3">
+      {/* Header mockup showing the sun/moon toggle */}
+      <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-3 py-2 border-b">
+          <MockLogo />
+          <div className="flex items-center gap-1.5">
+            <div className="h-3 w-3 rounded text-muted-foreground/40">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </div>
+            <div className="ring-2 ring-primary/40 rounded p-0.5">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3 text-primary"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <div className="h-3 w-3 rounded bg-muted" />
           </div>
         </div>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-medium text-foreground">Daily limit</span>
-        <div className="flex items-center gap-1.5">
-          <div className="h-6 w-6 rounded-md border flex items-center justify-center text-[10px] text-muted-foreground">-</div>
-          <span className="text-sm font-bold text-primary w-4 text-center">5</span>
-          <div className="h-6 w-6 rounded-md border flex items-center justify-center text-[10px] text-muted-foreground">+</div>
+        <div className="px-3 py-2 text-[9px] text-muted-foreground text-center">
+          Tap the sun/moon icon to switch themes
         </div>
       </div>
-      <div className="rounded-md bg-amber-500/10 border border-amber-500/20 px-2 py-1.5">
-        <p className="text-[9px] text-amber-600">More than 5 daily tasks reduces the likelihood of completion.</p>
+      {/* Settings tab mockup */}
+      <div className="rounded-xl border bg-card shadow-sm overflow-hidden p-3 space-y-2">
+        <p className="text-[10px] font-medium text-foreground">Settings tab</p>
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] text-muted-foreground">Daily limit</span>
+          <div className="flex items-center gap-1.5">
+            <div className="h-5 w-5 rounded border flex items-center justify-center text-[9px] text-muted-foreground">-</div>
+            <span className="text-xs font-bold text-primary w-3 text-center">5</span>
+            <div className="h-5 w-5 rounded border flex items-center justify-center text-[9px] text-muted-foreground">+</div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -290,7 +298,7 @@ const steps = [
   {
     illustration: <IllustrationSettings />,
     title: 'Settings',
-    description: 'Switch between light and dark mode, and set your daily task limit (2-10). Find these in the Settings tab.',
+    description: 'Tap the sun/moon icon in the header to switch between light and dark mode. Set your daily task limit (2-10) in the Settings tab.',
   },
 ]
 
