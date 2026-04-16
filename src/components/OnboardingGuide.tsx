@@ -263,6 +263,11 @@ const steps = [
     description: 'The Today tab shows your tasks for the current day. Tap the checkbox to mark items done. Complete them all for a surprise!',
   },
   {
+    illustration: <IllustrationAddTasks />,
+    title: 'Add tasks',
+    description: 'Tap the + button to add a recurring task (up to 20 total). Use "+ just for today" to add a one-off task that won\'t carry forward.',
+  },
+  {
     illustration: <IllustrationDayScheduling />,
     title: 'Day scheduling',
     description: 'Each task is assigned to specific days of the week. Tap the calendar icon on any task to change which days it appears.',
@@ -276,11 +281,6 @@ const steps = [
     illustration: <IllustrationReorder />,
     title: 'Reorder tasks',
     description: 'Press and hold the grip handle on the left of any task, then drag to rearrange your list.',
-  },
-  {
-    illustration: <IllustrationAddTasks />,
-    title: 'Add tasks',
-    description: 'Tap the + button to add a recurring task (up to 20 total). Use "+ just for today" to add a one-off task that won\'t carry forward.',
   },
   {
     illustration: <IllustrationAllArchive />,
