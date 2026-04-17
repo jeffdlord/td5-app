@@ -228,13 +228,15 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-4" {...swipeHandlers}>
-        <DateNavigator
-          formattedDate={formattedDate}
-          isToday={isToday}
-          onPrev={goToPrevDay}
-          onNext={goToNextDay}
-          onToday={goToToday}
-        />
+        {view === 'active' && (
+          <DateNavigator
+            formattedDate={formattedDate}
+            isToday={isToday}
+            onPrev={goToPrevDay}
+            onNext={goToNextDay}
+            onToday={goToToday}
+          />
+        )}
 
         <ViewToggle
           view={view}
