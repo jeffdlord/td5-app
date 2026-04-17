@@ -6,7 +6,7 @@ const redis = new Redis({
   token: process.env.KV_REST_API_TOKEN!,
 })
 
-const MAX_SESSIONS = 5
+const MAX_SESSIONS = 15
 const SESSION_TTL = 2592000 // 30 days in seconds
 const SESSION_PREFIX = 'td5_session:'
 
