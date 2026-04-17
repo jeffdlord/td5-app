@@ -302,7 +302,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
       </main>
 
       {/* day50 logo — bottom right */}
-      <div className="fixed bottom-4 right-4 z-10 opacity-70 hover:opacity-100 transition-opacity">
+      <div className="fixed bottom-4 right-4 z-10">
         <img
           src={settings.theme === 'dark' ? '/day50-light.png' : '/day50-dark.png'}
           alt="day50"
