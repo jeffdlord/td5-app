@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import confetti from 'canvas-confetti'
 import { useCurrentDate } from '@/hooks/useCurrentDate'
@@ -49,8 +49,28 @@ const ADMIN_EMAIL = 'jeffdlord@gmail.com'
 const ONBOARDING_DISMISSED_KEY = 'mo_onboarding_dismissed'
 
 export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateTheme, onUpdateMaxPerDay }: TodoAppProps) {
-  const [view, setView] = useState<ViewMode>('active')
+  const [view, setViewState] = useState<ViewMode>('active')
   const isAdmin = email?.toLowerCase().trim() === ADMIN_EMAIL
+
+  // Sync view with browser history so Android back button navigates views
+  const setView = useCallback((newView: ViewMode) => {
+    setViewState(newView)
+    if (newView !== 'active') {
+      window.history.pushState({ view: newView }, '')
+    }
+  }, [])
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state?.view) {
+        setViewState(e.state.view)
+      } else {
+        setViewState('active')
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   // Onboarding
   const [showOnboarding, setShowOnboarding] = useState(() => {
