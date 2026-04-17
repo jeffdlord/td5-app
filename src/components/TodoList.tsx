@@ -159,8 +159,8 @@ export function TodoList({
     return (
       <div className="text-center py-8">
         <div className="rounded-lg border bg-card p-8 mb-4">
-          <p className="text-lg font-medium text-foreground mb-1">No to-dos for this day</p>
-          <p className="text-sm text-muted-foreground">Add a to-do to get started!</p>
+          <p className="text-lg font-medium text-foreground mb-1">No tasks for this day</p>
+          <p className="text-sm text-muted-foreground">Add a task to get started!</p>
         </div>
         <AddTodoButton
           onAdd={onAdd}

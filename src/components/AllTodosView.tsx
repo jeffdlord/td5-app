@@ -88,7 +88,7 @@ function AllTodoRow({
           onClick={() => onArchive(todo.id)}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors shrink-0"
           aria-label="Archive"
-          title="Archive this to-do"
+          title="Archive this task"
         >
           <Archive className="h-3.5 w-3.5" />
         </button>
@@ -97,7 +97,7 @@ function AllTodoRow({
           onClick={() => onDelete(todo.id)}
           className="p-1 text-muted-foreground hover:text-destructive transition-colors shrink-0"
           aria-label="Delete"
-          title="Delete this to-do"
+          title="Delete this task"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
@@ -115,7 +115,7 @@ function AllTodoRow({
               disabled={isDisabled}
               title={
                 isDisabled
-                  ? `${DAY_LABELS[day]} already has 5 to-dos`
+                  ? `${DAY_LABELS[day]} is full`
                   : isSelected
                     ? `Remove from ${DAY_LABELS[day]}`
                     : `Add to ${DAY_LABELS[day]}`
@@ -174,7 +174,7 @@ function AddTodoInline({
         <div className="flex items-center gap-2 mb-2">
           <Input
             autoFocus
-            placeholder="New to-do title..."
+            placeholder="New task title..."
             value={title}
             onChange={e => setTitle(e.target.value)}
             onKeyDown={e => {
@@ -188,7 +188,7 @@ function AddTodoInline({
           />
           <button
             type="submit"
-            title="Add new to-do"
+            title="Add new task"
             className="text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 shrink-0"
           >
             Add
@@ -233,10 +233,10 @@ function AddTodoInline({
     <button
       onClick={() => setIsAdding(true)}
       className="mt-1 flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
-      title="Add a new recurring to-do"
+      title="Add a new recurring task"
     >
       <Plus className="h-4 w-4" />
-      Add to-do
+      Add task
     </button>
   )
 }
@@ -258,7 +258,7 @@ export function AllTodosView({
     return (
       <div className="text-center py-8">
         <div className="rounded-lg border bg-card p-8 mb-4">
-          <p className="text-lg font-medium text-foreground mb-1">No active to-dos</p>
+          <p className="text-lg font-medium text-foreground mb-1">No active tasks</p>
           <p className="text-sm text-muted-foreground">Add one to get started!</p>
         </div>
         {!addDisabled && <AddTodoInline disabledDays={disabledDays} onAdd={onAdd} />}

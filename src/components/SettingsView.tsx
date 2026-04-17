@@ -48,7 +48,7 @@ export function SettingsView({ settings, onUpdateTheme, onUpdateMaxPerDay }: Set
       <div className="rounded-lg border bg-card p-4">
         <h3 className="text-sm font-semibold text-foreground mb-1">Daily Task Limit</h3>
         <p className="text-xs text-muted-foreground mb-3">
-          Maximum number of to-dos per day of the week.
+          Maximum number of tasks per day of the week.
         </p>
 
         <div className="flex items-center justify-center gap-4">

@@ -31,7 +31,7 @@ export function DayPicker({ selected, onChange, disabledDays = [], compact = fal
             type="button"
             onClick={() => toggle(day)}
             disabled={isDisabled}
-            title={isDisabled ? `${DAY_LABELS[day]} already has 5 to-dos` : DAY_LABELS[day]}
+            title={isDisabled ? `${DAY_LABELS[day]} is full` : DAY_LABELS[day]}
             className={cn(
               'rounded-md font-medium transition-colors select-none',
               compact ? 'text-[10px] h-5 w-7' : 'text-xs h-7 w-9',

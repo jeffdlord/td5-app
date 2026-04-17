@@ -10,7 +10,7 @@ export function ArchiveView({ todos, onDelete }: ArchiveViewProps) {
   if (todos.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">No archived to-dos yet.</p>
+        <p className="text-muted-foreground">No archived tasks yet.</p>
       </div>
     )
   }

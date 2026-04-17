@@ -154,12 +154,12 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
 
   const handleArchive = (id: string) => {
     archiveTodo(id)
-    toast.success('To-do archived.')
+    toast.success('Task archived.')
   }
 
   const handleDelete = (id: string) => {
     deleteTodo(id)
-    toast.success('To-do deleted.')
+    toast.success('Task deleted.')
   }
 
   const swipeHandlers = useSwipeable({

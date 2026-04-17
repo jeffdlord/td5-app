@@ -13,6 +13,9 @@ import {
   LayoutList,
   Archive,
   Settings,
+  Smartphone,
+  Share,
+  MoreVertical,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -169,7 +172,7 @@ function IllustrationAddTasks() {
     <div className="w-56 rounded-xl border bg-card shadow-sm overflow-hidden p-3 space-y-2">
       <MockTodoRow title="Morning workout" checked={false} />
       <button className="w-full flex items-center justify-center gap-1.5 rounded-md border border-dashed border-primary/40 py-2 text-[11px] text-primary font-medium">
-        <Plus className="h-3 w-3" /> Add to-do
+        <Plus className="h-3 w-3" /> Add task
       </button>
       <div className="border-t pt-2">
         <div className="flex items-center gap-2 rounded-md border border-dashed bg-card/50 px-2.5 py-2 text-[11px]">
@@ -178,6 +181,43 @@ function IllustrationAddTasks() {
         </div>
         <div className="flex items-center gap-1 mt-1.5 text-[10px] text-muted-foreground">
           <Plus className="h-2.5 w-2.5" /> just for today
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function IllustrationPWA() {
+  return (
+    <div className="w-56 space-y-2.5">
+      {/* iPhone */}
+      <div className="rounded-xl border bg-card shadow-sm overflow-hidden p-3">
+        <div className="flex items-center gap-2 mb-2">
+          <Smartphone className="h-4 w-4 text-muted-foreground" />
+          <p className="text-[10px] font-medium text-foreground">iPhone</p>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+          <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1">
+            <Share className="h-3 w-3" />
+            <span>Share</span>
+          </div>
+          <ChevronRight className="h-3 w-3" />
+          <span className="font-medium text-foreground">"Add to Home Screen"</span>
+        </div>
+      </div>
+      {/* Android */}
+      <div className="rounded-xl border bg-card shadow-sm overflow-hidden p-3">
+        <div className="flex items-center gap-2 mb-2">
+          <Smartphone className="h-4 w-4 text-muted-foreground" />
+          <p className="text-[10px] font-medium text-foreground">Android</p>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+          <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1">
+            <MoreVertical className="h-3 w-3" />
+            <span>Menu</span>
+          </div>
+          <ChevronRight className="h-3 w-3" />
+          <span className="font-medium text-foreground">"Install app"</span>
         </div>
       </div>
     </div>
@@ -274,6 +314,11 @@ const steps = [
     illustration: <IllustrationAddTasks />,
     title: 'Add tasks',
     description: 'Tap the + button to add a recurring task (up to 20 total). Use "+ just for today" to add a one-off task that won\'t carry forward.',
+  },
+  {
+    illustration: <IllustrationPWA />,
+    title: 'Install the app',
+    description: 'mo is a progressive web app — save it to your home screen for a native app experience. On iPhone: tap the Share button then "Add to Home Screen." On Android: tap the menu (three dots) then "Add to Home Screen" or "Install app."',
   },
   {
     illustration: <IllustrationDayScheduling />,

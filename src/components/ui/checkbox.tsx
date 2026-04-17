@@ -10,6 +10,7 @@ interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>
 const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
   ({ className, checked, onCheckedChange, ...props }, ref) => (
     <button
+      type="button"
       ref={ref}
       role="checkbox"
       aria-checked={checked}

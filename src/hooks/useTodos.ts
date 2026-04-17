@@ -122,14 +122,14 @@ export function useTodos(maxPerDay: number = 5) {
 
     const active = todos.filter(t => t.archivedAt === null)
     if (active.length >= MAX_TOTAL) {
-      return { success: false, error: `Maximum ${MAX_TOTAL} total active to-dos reached.` }
+      return { success: false, error: `Maximum ${MAX_TOTAL} total active tasks reached.` }
     }
 
     // Check per-day limits
     for (const day of days) {
       if (countForDay(active, day) >= maxPerDay) {
         const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day]
-        return { success: false, error: `${dayName} already has ${maxPerDay} to-dos.` }
+        return { success: false, error: `${dayName} already has ${maxPerDay} tasks.` }
       }
     }
 
@@ -158,7 +158,7 @@ export function useTodos(maxPerDay: number = 5) {
     for (const day of days) {
       if (countForDay(active, day) >= maxPerDay) {
         const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day]
-        return { success: false, error: `${dayName} already has ${maxPerDay} to-dos.` }
+        return { success: false, error: `${dayName} already has ${maxPerDay} tasks.` }
       }
     }
 

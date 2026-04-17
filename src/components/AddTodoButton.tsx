@@ -39,7 +39,7 @@ export function AddTodoButton({ onAdd, disabled, disabledDays, currentDay }: Add
       <form onSubmit={handleSubmit} className="mt-3 space-y-2 rounded-lg border bg-card p-3">
         <Input
           autoFocus
-          placeholder="New to-do title..."
+          placeholder="New task title..."
           value={title}
           onChange={e => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -49,7 +49,7 @@ export function AddTodoButton({ onAdd, disabled, disabledDays, currentDay }: Add
           <DayPicker selected={days} onChange={setDays} disabledDays={disabledDays} />
           <button
             type="submit"
-            title="Add new to-do"
+            title="Add new task"
             className="text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1"
           >
             Add
@@ -66,11 +66,11 @@ export function AddTodoButton({ onAdd, disabled, disabledDays, currentDay }: Add
         setIsAdding(true)
       }}
       disabled={disabled}
-      title={disabled ? 'Maximum to-dos reached' : 'Add a new recurring to-do'}
+      title={disabled ? 'Maximum tasks reached' : 'Add a new recurring task'}
       className="mt-3 flex items-center justify-center gap-2 w-full py-3 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Plus className="h-4 w-4" />
-      Add to-do {disabled && '(max reached)'}
+      Add task {disabled && '(max reached)'}
     </button>
   )
 }

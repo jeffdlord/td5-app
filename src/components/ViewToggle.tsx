@@ -30,8 +30,8 @@ export function ViewToggle({ view, onViewChange, archiveCount, isAdmin }: ViewTo
   return (
     <div className="flex gap-1 mb-4 p-1 rounded-lg bg-muted">
       {btn('active', <ListTodo className="h-3.5 w-3.5" />, 'Today', "Today's tasks")}
-      {btn('all', <LayoutList className="h-3.5 w-3.5" />, 'All', 'All recurring to-dos')}
-      {btn('archive', <Archive className="h-3.5 w-3.5" />, `Archive${archiveCount > 0 ? ` (${archiveCount})` : ''}`, 'Archived to-dos')}
+      {btn('all', <LayoutList className="h-3.5 w-3.5" />, 'All', 'All recurring tasks')}
+      {btn('archive', <Archive className="h-3.5 w-3.5" />, `Archive${archiveCount > 0 ? ` (${archiveCount})` : ''}`, 'Archived tasks')}
       {btn('settings', <Settings className="h-3.5 w-3.5" />, 'Settings', 'App settings')}
       {isAdmin && btn('dashboard', <BarChart3 className="h-3.5 w-3.5" />, 'Stats', 'Admin dashboard')}
     </div>

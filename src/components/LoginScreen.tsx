@@ -3,7 +3,6 @@ import { Card, CardHeader, CardDescription, CardContent } from '@/components/ui/
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { EyeIcon } from './EyeIcon'
 import { Loader2, KeyRound, Sun, Moon } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -144,7 +143,6 @@ export function LoginScreen({ onLogin, theme, onToggleTheme }: LoginScreenProps)
                     </>
                   ) : (
                     <>
-                      <EyeIcon className="h-4 w-4" />
                       Enter
                     </>
                   )}

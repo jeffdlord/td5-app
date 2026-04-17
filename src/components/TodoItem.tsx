@@ -164,7 +164,7 @@ export function TodoItem({
           onClick={() => onArchive(todo.id)}
           className="p-1 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Archive"
-          title="Archive this to-do"
+          title="Archive this task"
         >
           <Archive className="h-3.5 w-3.5" />
         </button>
@@ -173,7 +173,7 @@ export function TodoItem({
           onClick={() => onDelete(todo.id)}
           className="p-1 text-muted-foreground hover:text-destructive transition-colors"
           aria-label="Delete"
-          title="Delete this to-do"
+          title="Delete this task"
         >
           <Trash2 className="h-3.5 w-3.5" />
         </button>
