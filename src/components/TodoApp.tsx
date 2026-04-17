@@ -227,7 +227,7 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-4" {...swipeHandlers}>
+      <main className="max-w-lg mx-auto px-4 py-4" {...(view === 'active' ? swipeHandlers : {})}>
         {view === 'active' && (
           <DateNavigator
             formattedDate={formattedDate}
