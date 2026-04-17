@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['mo-logo.svg', 'mo-logo-192x192.png', 'mo-logo-512x512.png'],
       manifest: {
-        name: 'mo - Daily Todo Tracker',
+        name: 'mo — build momentum',
         short_name: 'mo',
-        description: 'Track your daily todos',
+        description: 'A simple app to build daily momentum through small, focused habits.',
         theme_color: '#849669',
         background_color: '#0f0f0f',
         display: 'standalone',
