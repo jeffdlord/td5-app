@@ -12,7 +12,10 @@ async function fetchStatuses(): Promise<Record<string, DailyStatus> | null> {
     const q = authQuery()
     if (!q) return null
     const res = await fetch(`/api/statuses?${q}`)
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.warn('Failed to fetch statuses from server:', res.status)
+      return null
+    }
     const data = await res.json()
     return data.statuses && typeof data.statuses === 'object' ? data.statuses : null
   } catch {
@@ -24,13 +27,16 @@ async function saveStatuses(statuses: Record<string, DailyStatus>): Promise<void
   try {
     const q = authQuery()
     if (!q) return
-    await fetch(`/api/statuses?${q}`, {
+    const res = await fetch(`/api/statuses?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ statuses }),
     })
-  } catch {
-    console.warn('Failed to sync statuses to server.')
+    if (!res.ok) {
+      console.error('Failed to save statuses to server:', res.status)
+    }
+  } catch (err) {
+    console.error('Failed to sync statuses to server:', err)
   }
 }
 
@@ -38,15 +44,24 @@ export function useDailyStatus() {
   const [statuses, setStatuses] = useLocalStorage<Record<string, DailyStatus>>('td5_daily_statuses', {})
   const initialLoadDone = useRef(false)
 
-  // Load from API on mount
+  // Load from API on mount — prefer whichever source has more data
   useEffect(() => {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
     fetchStatuses().then(remoteStatuses => {
-      if (remoteStatuses !== null) {
-        setStatuses(remoteStatuses)
-      }
+      if (remoteStatuses === null) return
+
+      setStatuses(prev => {
+        const remoteCount = Object.keys(remoteStatuses).length
+        const localCount = Object.keys(prev).length
+        if (remoteCount > 0) return remoteStatuses
+        if (localCount > 0) {
+          saveStatuses(prev)
+          return prev
+        }
+        return remoteStatuses
+      })
     })
   }, [setStatuses])
 

@@ -20,13 +20,16 @@ async function saveDailyTasks(tasks: DailyTask[]): Promise<void> {
   try {
     const q = authQuery()
     if (!q) return
-    await fetch(`/api/daily-tasks?${q}`, {
+    const res = await fetch(`/api/daily-tasks?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tasks }),
     })
-  } catch {
-    console.warn('Failed to sync daily tasks to server.')
+    if (!res.ok) {
+      console.error('Failed to save daily tasks to server:', res.status)
+    }
+  } catch (err) {
+    console.error('Failed to sync daily tasks to server:', err)
   }
 }
 
@@ -34,15 +37,22 @@ export function useDailyTasks() {
   const [tasks, setTasks] = useLocalStorage<DailyTask[]>('td5_daily_tasks', [])
   const initialLoadDone = useRef(false)
 
-  // Load from API on mount
+  // Load from API on mount — prefer whichever source has more data
   useEffect(() => {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
     fetchDailyTasks().then(remoteTasks => {
-      if (remoteTasks !== null) {
-        setTasks(remoteTasks)
-      }
+      if (remoteTasks === null) return
+
+      setTasks(prev => {
+        if (remoteTasks.length > 0) return remoteTasks
+        if (prev.length > 0) {
+          saveDailyTasks(prev)
+          return prev
+        }
+        return remoteTasks
+      })
     })
   }, [setTasks])
 

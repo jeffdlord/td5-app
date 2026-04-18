@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { authQuery } from '@/lib/api'
+import { toast } from 'sonner'
 import type { Todo, DayOfWeek } from '@/types'
 
 const MAX_TOTAL = 20
@@ -10,7 +11,10 @@ async function fetchTodos(): Promise<Todo[] | null> {
     const q = authQuery()
     if (!q) return null
     const res = await fetch(`/api/todos?${q}`)
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.warn('Failed to fetch tasks from server:', res.status)
+      return null
+    }
     const data = await res.json()
     return Array.isArray(data.todos) ? data.todos : null
   } catch {
@@ -22,13 +26,18 @@ async function saveTodos(todos: Todo[]): Promise<void> {
   try {
     const q = authQuery()
     if (!q) return
-    await fetch(`/api/todos?${q}`, {
+    const res = await fetch(`/api/todos?${q}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ todos }),
     })
-  } catch {
-    console.warn('Failed to sync todos to server.')
+    if (!res.ok) {
+      console.error('Failed to save tasks to server:', res.status)
+      toast.error('Failed to save tasks to server. Your data is saved locally.')
+    }
+  } catch (err) {
+    console.error('Failed to sync tasks to server:', err)
+    toast.error('Failed to save tasks to server. Your data is saved locally.')
   }
 }
 
@@ -55,19 +64,30 @@ export function useTodos(maxPerDay: number = 5) {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Load from API on mount
+  // Load from API on mount — prefer whichever source has more data
   useEffect(() => {
     if (initialLoadDone.current) return
     initialLoadDone.current = true
 
     fetchTodos().then(remoteTodos => {
-      if (remoteTodos !== null) {
-        // Migrate remote todos too
-        const migrated = remoteTodos.map(t =>
-          Array.isArray(t.days) ? t : { ...t, days: [0, 1, 2, 3, 4, 5, 6] as DayOfWeek[] }
-        )
-        setTodos(migrated)
-      }
+      if (remoteTodos === null) return // API unreachable, keep local data
+
+      // Migrate remote todos
+      const migrated = remoteTodos.map(t =>
+        Array.isArray(t.days) ? t : { ...t, days: [0, 1, 2, 3, 4, 5, 6] as DayOfWeek[] }
+      )
+
+      setTodos(prev => {
+        // If server has data, use it (source of truth)
+        if (migrated.length > 0) return migrated
+        // If server is empty but we have local data, push local to server
+        if (prev.length > 0) {
+          saveTodos(prev)
+          return prev
+        }
+        // Both empty — new user
+        return migrated
+      })
     })
   }, [setTodos])
 
