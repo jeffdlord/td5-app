@@ -47,6 +47,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed.' })
   } catch (err) {
     console.error('Todos API error:', err)
-    return res.status(500).json({ error: 'Internal server error.' })
+    const message = err instanceof Error ? err.message : 'Unknown error'
+    return res.status(500).json({ error: `Internal server error: ${message}` })
   }
 }
