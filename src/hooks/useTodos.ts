@@ -32,12 +32,13 @@ async function saveTodos(todos: Todo[]): Promise<void> {
       body: JSON.stringify({ todos }),
     })
     if (!res.ok) {
-      console.error('Failed to save tasks to server:', res.status)
-      toast.error('Failed to save tasks to server. Your data is saved locally.')
+      const errData = await res.json().catch(() => ({}))
+      console.error('Failed to save tasks:', res.status, errData)
+      toast.error(`Save failed (${res.status}): ${(errData as { error?: string }).error || 'Unknown error'}`)
     }
   } catch (err) {
     console.error('Failed to sync tasks to server:', err)
-    toast.error('Failed to save tasks to server. Your data is saved locally.')
+    toast.error('Failed to save tasks — network error. Your data is saved locally.')
   }
 }
 
