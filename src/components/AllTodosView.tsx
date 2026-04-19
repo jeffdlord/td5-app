@@ -189,7 +189,8 @@ function AddTodoInline({
           <button
             type="submit"
             title="Add new task"
-            className="text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 shrink-0"
+            className="text-xs font-bold text-white px-4 py-1.5 rounded-full transition-all hover:scale-105 active:scale-95 shrink-0"
+            style={{ backgroundColor: '#6b7a54' }}
           >
             Add
           </button>

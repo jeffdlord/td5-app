@@ -129,7 +129,8 @@ export function TodoList({
           />
           <button
             onClick={handleAddDailyTask}
-            className="text-xs text-primary hover:underline"
+            className="text-xs font-bold text-white px-4 py-1.5 rounded-full transition-all hover:scale-105 active:scale-95"
+            style={{ backgroundColor: '#6b7a54' }}
             title="Add daily task"
           >
             Add

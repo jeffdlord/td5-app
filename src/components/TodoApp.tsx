@@ -323,6 +323,11 @@ export function TodoApp({ email, onLogout, settings, onToggleTheme, onUpdateThem
         )}
       </main>
 
+      {/* Version number — bottom left */}
+      <div className="fixed bottom-4 left-4 z-10">
+        <span className="text-[10px] text-muted-foreground/50">v0.81</span>
+      </div>
+
       {/* day50 logo — bottom right */}
       <div className="fixed bottom-4 right-4 z-10">
         <img
