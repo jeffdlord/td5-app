@@ -7,6 +7,7 @@ interface UserStats {
   loginCount: number
   lastLogin: string | null
   totalItems: number
+  avgTasksPerDay: number
   totalCompleted: number
   avgCompletedPerDay: number
 }
@@ -89,8 +90,9 @@ export function AdminDashboard() {
                   <th className="text-right py-2 px-2 font-medium">Logins</th>
                   <th className="text-right py-2 px-2 font-medium whitespace-nowrap">Last Login</th>
                   <th className="text-right py-2 px-2 font-medium">Items</th>
+                  <th className="text-right py-2 px-2 font-medium whitespace-nowrap">Tasks/d</th>
                   <th className="text-right py-2 px-2 font-medium">Done</th>
-                  <th className="text-right py-2 pl-2 font-medium">Avg/d</th>
+                  <th className="text-right py-2 pl-2 font-medium whitespace-nowrap">Done/d</th>
                 </tr>
               </thead>
               <tbody>
@@ -100,6 +102,7 @@ export function AdminDashboard() {
                     <td className="py-2 px-2 text-right text-foreground">{user.loginCount}</td>
                     <td className="py-2 px-2 text-right text-foreground whitespace-nowrap">{formatDate(user.lastLogin)}</td>
                     <td className="py-2 px-2 text-right text-foreground">{user.totalItems}</td>
+                    <td className="py-2 px-2 text-right text-foreground">{user.avgTasksPerDay}</td>
                     <td className="py-2 px-2 text-right text-foreground">{user.totalCompleted}</td>
                     <td className="py-2 pl-2 text-right text-foreground">{user.avgCompletedPerDay}</td>
                   </tr>

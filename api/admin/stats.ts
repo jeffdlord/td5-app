@@ -15,6 +15,7 @@ interface UserStats {
   loginCount: number
   lastLogin: string | null
   totalItems: number
+  avgTasksPerDay: number
   totalCompleted: number
   avgCompletedPerDay: number
 }
@@ -80,30 +81,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Todos (may be encrypted)
       let totalItems = 0
+      let avgTasksPerDay = 0
       const todosRaw = await redis.get(`td5_todos:${userEmail}`)
       if (todosRaw !== null) {
         try {
           const todos = decrypt<unknown>(todosRaw)
           if (Array.isArray(todos)) {
-            totalItems = todos.filter((t: { archivedAt?: string | null }) => t.archivedAt === null).length
-          }
-        } catch { /* skip */ }
-      }
-
-      // Daily tasks (may be encrypted)
-      const dailyTasksRaw = await redis.get(`td5_daily_tasks:${userEmail}`)
-      if (dailyTasksRaw !== null) {
-        try {
-          const tasks = decrypt<unknown>(dailyTasksRaw)
-          if (Array.isArray(tasks)) {
-            totalItems += tasks.length
+            const active = todos.filter((t: { archivedAt?: string | null }) => t.archivedAt === null)
+            totalItems = active.length
+            // Calculate average tasks per day across the 7 days of the week
+            const dayCounts = [0, 0, 0, 0, 0, 0, 0]
+            for (const t of active) {
+              const days = Array.isArray((t as { days?: number[] }).days) ? (t as { days: number[] }).days : [0, 1, 2, 3, 4, 5, 6]
+              for (const d of days) {
+                if (d >= 0 && d <= 6) dayCounts[d]++
+              }
+            }
+            const daysWithTasks = dayCounts.filter(c => c > 0).length
+            const totalAssignments = dayCounts.reduce((a, b) => a + b, 0)
+            avgTasksPerDay = daysWithTasks > 0 ? Math.round((totalAssignments / daysWithTasks) * 10) / 10 : 0
           }
         } catch { /* skip */ }
       }
 
       // Statuses (may be encrypted)
       let totalCompleted = 0
-      const uniqueDays = new Set<string>()
+      let firstCompletionDate: string | null = null
       const statusesRaw = await redis.get(`td5_statuses:${userEmail}`)
       if (statusesRaw !== null) {
         try {
@@ -113,7 +116,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             for (const [, status] of Object.entries(statusMap)) {
               if (status.completed === 1) {
                 totalCompleted++
-                if (status.date) uniqueDays.add(status.date)
+                if (status.date && (!firstCompletionDate || status.date < firstCompletionDate)) {
+                  firstCompletionDate = status.date
+                }
               }
             }
           }
@@ -121,6 +126,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Also count completed daily tasks
+      const dailyTasksRaw = await redis.get(`td5_daily_tasks:${userEmail}`)
       if (dailyTasksRaw !== null) {
         try {
           const tasks = decrypt<unknown>(dailyTasksRaw)
@@ -128,21 +134,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             for (const t of tasks) {
               if ((t as { completed?: boolean }).completed) {
                 totalCompleted++
-                if ((t as { date?: string }).date) uniqueDays.add((t as { date: string }).date)
+                const d = (t as { date?: string }).date
+                if (d && (!firstCompletionDate || d < firstCompletionDate)) {
+                  firstCompletionDate = d
+                }
               }
             }
           }
         } catch { /* skip */ }
       }
 
-      const daysActive = uniqueDays.size
-      const avgCompletedPerDay = daysActive > 0 ? Math.round((totalCompleted / daysActive) * 10) / 10 : 0
+      // Avg completed per day = total completions / calendar days since first completion
+      let avgCompletedPerDay = 0
+      if (firstCompletionDate && totalCompleted > 0) {
+        const first = new Date(firstCompletionDate + 'T00:00:00')
+        const now = new Date()
+        const calendarDays = Math.max(1, Math.ceil((now.getTime() - first.getTime()) / (1000 * 60 * 60 * 24)))
+        avgCompletedPerDay = Math.round((totalCompleted / calendarDays) * 10) / 10
+      }
 
       users.push({
         email: userEmail,
         loginCount,
         lastLogin,
         totalItems,
+        avgTasksPerDay,
         totalCompleted,
         avgCompletedPerDay,
       })
